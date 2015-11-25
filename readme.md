@@ -2,6 +2,20 @@
 
 Hey there, this is Braubar!
 
+## Requirements
+
+- python3
+- pip
+- flask (via pip)
+- git 
+
+
+## Testserver
+
+Als Test wird ein Flask-Webserver gestartet der über braupi:5000 erreichbar ist. 
+Flask muss mit pip auf dem Zielhost installiert sein
+
+
 
 ## Deployment
 
