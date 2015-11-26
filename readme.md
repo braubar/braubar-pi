@@ -6,7 +6,7 @@ Hey there, this is Braubar!
 
 - python3
 - pip
-- flask (via pip)
+- flask (via pip) -> http://flask.pocoo.org/docs/0.10/quickstart/
 - git 
 
 
