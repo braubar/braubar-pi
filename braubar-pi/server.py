@@ -1,12 +1,9 @@
 # -*- coding: utf-8 -*-
-import threading
-from datetime import timedelta
 from flask import Flask
 from flask import render_template
 
-from SimpleState import SimpleState
-from Countdown import Countdown
-import EventWait
+from simplestate import SimpleState
+import eventwait
 
 __author__ = 'oli@fesseler.info'
 __version__ = ('0', '0', '1')
@@ -47,7 +44,7 @@ def brewstate():
 @app.route('/brew/next')
 def next():
     # TODO prüfen ob thread gestartet wurde
-    EventWait.end()
+    eventwait.end()
     return "event released"
 
 if __name__ == "__main__":
