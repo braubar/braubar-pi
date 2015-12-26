@@ -34,18 +34,19 @@ def bewStart():
     return "brauprozess gestartet"
 
 
-
 @app.route('/brew/state')
 def brewstate():
     if not s.state:
         return "no action started"
     return s.state + ' sec more to wait'
 
+
 @app.route('/brew/next')
 def next():
     # TODO prüfen ob thread gestartet wurde
     eventwait.end()
     return "event released"
+
 
 if __name__ == "__main__":
     # start app in debugmode

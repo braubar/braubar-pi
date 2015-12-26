@@ -38,7 +38,6 @@ class Maischen(State):
         pid = PIDWrapper()
         pid.start()
 
-
         return self.name
 
     def release_state(self):

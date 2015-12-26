@@ -1,5 +1,6 @@
 import asyncio
 
+
 class EchoServerClientProtocol(asyncio.Protocol):
     def connection_made(self, transport):
         peername = transport.get_extra_info('peername')
@@ -9,6 +10,7 @@ class EchoServerClientProtocol(asyncio.Protocol):
     def data_received(self, data):
         message = data.decode()
         print('Data received: {!r}'.format(message))
+
 
 class ReadTempSocket:
     loop = None
@@ -34,7 +36,3 @@ class ReadTempSocket:
         self.server.close()
         self.loop.run_until_complete(self.server.wait_closed())
         self.loop.close()
-
-
-
-

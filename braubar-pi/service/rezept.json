@@ -1,27 +1,27 @@
 {
-    "maischen": {
-        "temp": 45,
-        "time": 0,
-        "auto": 0
-    },
-    "beta": {
-        "temp": 63,
-        "time": 4,
-        "auto": 1
-    },
-    "alpha": {
-        "temp": 74,
-        "time": 3,
-        "auto": 1
-    },
-    "leutern": {
-        "temp": 78,
-        "time": 0,
-        "auto": 0
-    },
-    "kochen": {
-        "temp": 100,
-        "time": 0,
-        "auto": 0
-    }
+  "maischen": {
+    "temp": 45,
+    "time": 0,
+    "auto": 0
+  },
+  "beta": {
+    "temp": 63,
+    "time": 4,
+    "auto": 1
+  },
+  "alpha": {
+    "temp": 74,
+    "time": 3,
+    "auto": 1
+  },
+  "leutern": {
+    "temp": 78,
+    "time": 0,
+    "auto": 0
+  },
+  "kochen": {
+    "temp": 100,
+    "time": 0,
+    "auto": 0
+  }
 }

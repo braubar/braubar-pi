@@ -37,7 +37,7 @@ class Steckdose:
 
     def request(self, referrer='', values=''):
         url = self.url + referrer
-        r = requests.post(url, data = values)
+        r = requests.post(url, data=values)
         return self.parse_response(r.text)
 
     def parse_response(self, response_data):

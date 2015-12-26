@@ -1,4 +1,4 @@
-#from PID import PID as PID
+# from PID import PID as PID
 from PIDs import Pid as PID
 from threading import Thread, Timer
 
@@ -13,6 +13,7 @@ class PIDWrapper():
 
     def update(self, set):
         self.pid.set(set)
+
     def start(self):
         self.thread.run()
 
