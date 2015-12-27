@@ -77,14 +77,11 @@ class BrewDaemon:
         return (temp, last_value)
 
     def temp_actor(self, pid_output, x):
-        self.last_switch = PowerStrip.OFF
         status = self.powerstrip.fetch_status()
         if pid_output > 0 and status.get(PowerStrip.PLUG_1) == PowerStrip.OFF:
-            self.last_switch == PowerStrip.ON
             print("powerstrip on ", pid_output)
             PowerStrip().switch(PowerStrip.PLUG_1, PowerStrip.ON)
         if pid_output < 0 and status.get(PowerStrip.PLUG_1) == PowerStrip.ON:
-            self.last_switch == PowerStrip.OFF
             print("powerstrip on ", pid_output)
             PowerStrip().switch(PowerStrip.PLUG_1, PowerStrip.OFF)
 
