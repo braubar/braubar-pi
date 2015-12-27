@@ -1,26 +1,26 @@
 {
   "maischen": {
-    "temp": 45,
+    "temp": 45.0,
     "time": 0,
     "auto": 0
   },
   "beta": {
-    "temp": 63,
-    "time": 4,
+    "temp": 63.0,
+    "time": 10,
     "auto": 1
   },
   "alpha": {
-    "temp": 74,
-    "time": 3,
+    "temp": 74.0,
+    "time": 9,
     "auto": 1
   },
   "leutern": {
-    "temp": 78,
+    "temp": 78.0,
     "time": 0,
     "auto": 0
   },
   "kochen": {
-    "temp": 100,
+    "temp": 100.0,
     "time": 0,
     "auto": 0
   }
