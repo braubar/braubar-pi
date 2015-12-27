@@ -18,12 +18,6 @@ class SimpleState:
 
     global state_machine
 
-    @staticmethod
-    def instance():
-        if not state_machine:
-            state_machine = SimpleState()
-        return state_machine
-
     def __init__(self):
         self.state_list = [(self.maischen, SimpleState.MAISCHEN),
                            (self.beta, SimpleState.BETA),
@@ -73,35 +67,11 @@ class SimpleState:
         method, state_name = self.state_list.pop()
         return method(SimpleState.rezept.get(state_name))
 
-    # def runall(self):
-    #     print(self.machine)
-    #     state, arg = self.machine.get((self.maischen, 0))
-    #     i = 0
-    #     while True:
-    #         event = state(self.rezept.get(arg))
-    #         res = self.machine.get((state, event))
-    #         # print(res)
-    #         # print(machine)
-    #         if not res:
-    #             print("halting on", state, event)
-    #             break
-    #         state, arg = res
-    #         i += 1
-    #         if i > 20:
-    #             break
-
     def change_state(self, next, *kargs):
         # TODO change_state implementiren
         print("changestate doesnt work: ", next)
 
 
-        # d = timedelta(seconds=10)
-        # t = threading.Thread(target=c.wait_with_status, args=[d.seconds])
-        # t.start()
-        # if t.is_alive():
-        #     return 'thread runs for ' + str(c.delta) + ' more seconds'
-
-    # s = SimpleState()
     machine = {
         (maischen, 0): (maischen, MAISCHEN),
         (maischen, 1): (beta, BETA),
@@ -138,5 +108,3 @@ class SimpleState:
             'auto': 0
         }
     }
-
-# s.runall()
