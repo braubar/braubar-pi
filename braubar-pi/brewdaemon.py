@@ -1,4 +1,5 @@
 import sys
+
 sys.path.append('./libs')
 sys.path.append('./helper')
 sys.path.append('./service')
@@ -9,14 +10,10 @@ from powerstrip import PowerStrip
 import logging
 import time
 
-from matplotlib import pyplot
 from readsocket import ReadSocket
 from threading import Event, Thread, Timer
 import os
 from brewtimer import BrewTimer
-# from eventwait import WaitFor
-# from tempcontrol import TempControl
-
 
 
 P = 8000.0
@@ -30,7 +27,7 @@ SOCKET_IP = '192.168.2.9'
 SOCKET_PORT = 10001
 STATE_TEMP = 68.0
 
-logfile = "log/brewlog_"+time.strftime("%d-%m-%Y_%H-%M-%S",time.localtime())+".log"
+logfile = "log/brewlog_" + time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime()) + ".log"
 logging.basicConfig(filename=logfile, level=logging.WARN, format='[BrewData] %(asctime)s %(message)s')
 
 
@@ -59,12 +56,11 @@ class BrewDaemon:
                 except ValueError:
                     x = 0.0
 
-            output = self.pid.step(dt=2.0,input=x)
+            output = self.pid.step(dt=2.0, input=x)
             self.temp_actor(output, x)
             print("temp", x, "outout", output)
             time.sleep(2)
             last_value = float(x)
-
 
     def temp_actor(self, pid_output, x):
         self.last_switch = PowerStrip.OFF
@@ -78,7 +74,8 @@ class BrewDaemon:
             print("powerstrip on ", pid_output)
             PowerStrip().switch(PowerStrip.PLUG_1, PowerStrip.OFF)
 
-        logging.warning([time.time(),x, pid_output])
+        logging.warning([time.time(), x, pid_output])
+
 
 if __name__ == "__main__":
 
