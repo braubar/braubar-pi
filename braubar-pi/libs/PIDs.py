@@ -132,6 +132,7 @@ class Pid (object):
         output = self.Kp*err + self.Ki*I + self.Kd*D
         self._previous = err
         self.output = self.bound(output)
+        return  self.output
 
     def bound(self, output):
         '''Ensure the output falls within the current output range.
