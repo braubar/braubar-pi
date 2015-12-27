@@ -4,13 +4,14 @@ from flask import render_template
 
 from simplestate import SimpleState
 import eventwait
+from test import testReadTempSocket
 
 __author__ = 'oli@fesseler.info'
 __version__ = ('0', '0', '1')
 
 app = Flask(__name__)
 
-s = SimpleState()
+
 
 
 @app.route("/")
@@ -26,29 +27,31 @@ def hello(name=None):
 
 @app.route('/brew/start')
 def bewStart():
-    if SimpleState.state:
-        return "läuft schon im status: " + SimpleState.state
-
-    s.runall()
-
+    if SimpleState.instance().state:
+        # TODO geht net
+        return "läuft schon im status: " + SimpleState.instance().state
+    a = SimpleState.instance().next()
     return "brauprozess gestartet"
 
 
 @app.route('/brew/state')
 def brewstate():
-    if not s.state:
+    if not SimpleState.instance().state:
         return "no action started"
-    return s.state + ' sec more to wait'
+    return SimpleState.instance().state + ' sec more to wait'
 
 
 @app.route('/brew/next')
 def next():
     # TODO prüfen ob thread gestartet wurde
-    eventwait.end()
-    return "event released"
+    return SimpleState.instance().next()
+
+@app.route('/brew/temp')
+def temp():
+    a = testReadTempSocket()
 
 
 if __name__ == "__main__":
     # start app in debugmode
     app.debug = True
-    app.run(host="localhost")
+    app.run(host="192.168.2.9")
