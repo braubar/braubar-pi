@@ -1,11 +1,9 @@
-import sched
-import time
 from brewtimer import BrewTimer
 
 
 class SimpleState:
     count = 1
-    global state
+    state = None
 
     MAISCHEN = "maischen"
     BETA = "beta"
@@ -16,8 +14,6 @@ class SimpleState:
 
     state_list = []
 
-    global state_machine
-
     def __init__(self):
         self.state_list = [(self.maischen, SimpleState.MAISCHEN),
                            (self.beta, SimpleState.BETA),
@@ -27,24 +23,31 @@ class SimpleState:
                            (self.end, SimpleState.ENDE)]
         self.state_list.reverse()
 
+    def start(self):
+        if not self.state:
+            return self.next()
+        raise Exception("Braubar is already running")
+
     def maischen(self, x):
         state = self.MAISCHEN
 
-        print('vorheriger state: ', x)
-        return "warten, bis der nächste aufgerufen wird. "
+        print("warten, bis der nächste aufgerufen wird. ")
+        return self.rezept[state]
 
     def beta(self, x):
         state = self.BETA
         # x,time muss noch konvertiert werden
         delay = x.get('time')
-        BrewTimer(delay, self.next())
+        b = BrewTimer(delay, self.next())
+        b.start()
         print('beta will be finished after ', delay)
         return x
 
     def alpha(self, x):
         state = self.ALPHA
         delay = x.get('time')
-        BrewTimer(delay, self.next())
+        b = BrewTimer(delay, self.next())
+        b.start()
         print('alpha got', x)
         return x
 
