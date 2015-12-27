@@ -17,17 +17,7 @@ from brewtimer import BrewTimer
 # from eventwait import WaitFor
 # from tempcontrol import TempControl
 
-'''
 
-    >>> import pids
-
-    >>> p = pids.Pid( Kproportional, Kintegral, Kderivative )
-    >>> p.range( get_my_actuator_minimum(), get_my_actuator_maximum() )
-
-    >>> while True:
-    ...   output = p.step( my_clock.get_dt(), get_my_sensor_value() )
-    ...   set_my_actuator_value( output )
-'''
 
 P = 8000.0
 I = 0.0
