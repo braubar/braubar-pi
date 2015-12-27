@@ -1,13 +1,17 @@
+import sys
+sys.path.append('./libs')
+sys.path.append('./helper')
+sys.path.append('./service')
+
 import subprocess
-
-from matplotlib import pyplot
-
 from PIDs import Pid
 from powerstrip import PowerStrip
-from readsocket import ReadSocket
-from threading import Event, Thread, Timer
 import logging
 import time
+
+from matplotlib import pyplot
+from readsocket import ReadSocket
+from threading import Event, Thread, Timer
 import os
 from brewtimer import BrewTimer
 # from eventwait import WaitFor
