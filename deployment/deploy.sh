@@ -2,4 +2,4 @@
 echo "just executed"
 
 # pip muss installiert sein für flask!
-#python server.py
+#python flask_app.py

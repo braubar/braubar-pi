@@ -1,4 +1,10 @@
 from helper.readtempsocket import ReadTempSocket
 
-r = ReadTempSocket()
-r.run()
+class asd:
+
+    def __init__(self):
+        r = ReadTempSocket()
+        r.run()
+
+asd()
+

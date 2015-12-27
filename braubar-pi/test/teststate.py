@@ -4,7 +4,7 @@ import json
 state_list = [Maischen, Beta, Alpha, Leutern, Kochen, Kochen]
 state_list.reverse()
 
-io = open("rezept.json").read()
+io = open("recipe.json").read()
 rezept = json.loads(io)
 
 foo = BrewMachine(state_list, rezept)
