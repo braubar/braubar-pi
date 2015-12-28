@@ -1,7 +1,6 @@
 from matplotlib import pyplot
 
 
-a = [1.0, 1.2, 1.3, 1.2, 1.0, 1.5, 3]
 f = open("/tmp/braubar.temp", 'rb')
 a = f.readlines()
 b = []

@@ -3,7 +3,6 @@ from flask import Flask
 from flask import render_template
 
 from simplestate import SimpleState
-import eventwait
 from test import testReadTempSocket
 
 __author__ = 'oli@fesseler.info'
