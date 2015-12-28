@@ -1,9 +1,0 @@
-maischen
-beta
-alpha
-leutern
-kochen
-maischen
-alpha
-kochen
-ende
