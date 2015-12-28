@@ -63,8 +63,10 @@ class BrewDaemon:
 
             # switches plugstripe based on output value
             self.temp_actor(output, temp_current)
-
-            print("temp_current", temp_current, "outout", output, "state_temp", self.state_params["temp"])
+            timer_passed_checked = 0.0
+            if self.brew_timer is not None:
+                timer_passed_checked = self.brew_timer.passed()
+            print("temp_current", temp_current, "outout", output, "state_temp", self.state_params["temp"], "timer_passed", timer_passed_checked)
 
             time.sleep(2)
             last_value = float(temp_current)
@@ -74,8 +76,8 @@ class BrewDaemon:
             elif self.state_params["temp"] - TEMP_TOLERANCE <= temp_current <= self.state_params["temp"] + TEMP_TOLERANCE:
                 if self.brew_timer is None:
                     print("Start BrewTimer for ", self.simplestate.state, "and", self.state_params["time"], "seconds")
-                    brew_timer = BrewTimer(self.state_params["time"], self.next_state)
-                    brew_timer.start()
+                    self.brew_timer = BrewTimer(self.state_params["time"], self.next_state)
+                    self.brew_timer.start()
 
 
     def next_state(self):
