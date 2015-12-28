@@ -6,12 +6,12 @@
   },
   "beta": {
     "temp": 63.0,
-    "time": 10,
+    "time": 600,
     "auto": 1
   },
   "alpha": {
     "temp": 74.0,
-    "time": 9,
+    "time": 600,
     "auto": 1
   },
   "leutern": {

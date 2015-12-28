@@ -1,3 +1,5 @@
+import json
+
 from brewtimer import BrewTimer
 
 
@@ -11,7 +13,7 @@ class SimpleState:
     LEUTERN = "leutern"
     KOCHEN = "kochen"
     ENDE = "ende"
-
+    recipe = None
     state_list = []
 
     def __init__(self):
@@ -22,6 +24,7 @@ class SimpleState:
                            (self.kochen, SimpleState.KOCHEN),
                            (self.end, SimpleState.ENDE)]
         self.state_list.reverse()
+        self.recipe = json.load(open("service/recipe.json", 'r'))
 
     def start(self):
         if not self.state:
@@ -32,22 +35,18 @@ class SimpleState:
         state = self.MAISCHEN
 
         print("warten, bis der nächste aufgerufen wird. ")
-        return self.rezept[state]
+        return self.recipe[state]
 
     def beta(self, x):
         state = self.BETA
         # x,time muss noch konvertiert werden
         delay = x.get('time')
-        b = BrewTimer(delay, self.next())
-        b.start()
         print('beta will be finished after ', delay)
         return x
 
     def alpha(self, x):
         state = self.ALPHA
         delay = x.get('time')
-        b = BrewTimer(delay, self.next())
-        b.start()
         print('alpha got', x)
         return x
 
@@ -68,46 +67,8 @@ class SimpleState:
 
     def next(self):
         method, state_name = self.state_list.pop()
-        return method(SimpleState.rezept.get(state_name))
+        return method(self.recipe.get(state_name))
 
     def change_state(self, next, *kargs):
         # TODO change_state implementiren
         print("changestate doesnt work: ", next)
-
-
-    machine = {
-        (maischen, 0): (maischen, MAISCHEN),
-        (maischen, 1): (beta, BETA),
-        (beta, 1): (alpha, ALPHA),
-        (alpha, 1): (leutern, LEUTERN),
-        (leutern, 1): (kochen, KOCHEN),
-        (kochen, 1): (end, ENDE)
-    }
-
-    rezept = {
-        'maischen': {
-            'temp': 45,
-            'time': 0,
-            'auto': 0
-        },
-        'beta': {
-            'temp': 63,
-            'time': 4,
-            'auto': 1
-        },
-        'alpha': {
-            'temp': 74,
-            'time': 3,
-            'auto': 1
-        },
-        'leutern': {
-            'temp': 78,
-            'time': 0,
-            'auto': 0
-        },
-        'kochen': {
-            'temp': 100,
-            'time': 0,
-            'auto': 0
-        }
-    }

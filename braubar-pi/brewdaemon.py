@@ -2,6 +2,9 @@ import os
 import logging
 import time
 import sys
+
+from brewtimer import BrewTimer
+
 sys.path.append('./libs')
 sys.path.append('./StateMachine')
 sys.path.append('./helper')
@@ -21,6 +24,7 @@ WAIT_THREAD_TIMEOUT = 0.05
 WAIT_THREAD_NAME = "Thread_wait_temp"
 SOCKET_IP = '192.168.2.9'
 SOCKET_PORT = 10001
+TEMP_TOLERANCE = 0.5
 
 logfile = "log/brewlog_" + time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime()) + ".log"
 logging.basicConfig(filename=logfile, level=logging.WARN, format='[BrewData] %(asctime)s %(message)s')
@@ -31,6 +35,7 @@ class BrewDaemon:
     temp_control = None
     read_temp_socket = None
     temp_event = None
+    brew_timer = None
 
     def __init__(self):
         self.pid = Pid(P, I, D)
@@ -40,11 +45,14 @@ class BrewDaemon:
         self.simplestate = SimpleState()
         self.powerstrip.all_off()
 
+
+
     def run(self):
         last_value = 0.0
 
-        state_params = self.simplestate.start()
-        self.pid.set(state_params["temp"])
+        self.state_params = self.simplestate.start()
+        self.pid.set(self.state_params["temp"])
+
 
         while True:
             temp_raw = subprocess.check_output(["tail", "-1", "/tmp/braubar.temp"], universal_newlines=True)
@@ -56,14 +64,24 @@ class BrewDaemon:
             # switches plugstripe based on output value
             self.temp_actor(output, temp_current)
 
-            print("temp_current", temp_current, "outout", output, "state_temp", state_params["temp"])
+            print("temp_current", temp_current, "outout", output, "state_temp", self.state_params["temp"])
 
             time.sleep(2)
             last_value = float(temp_current)
-            if not state_params["auto"] == 1:
+            if not self.state_params["auto"] == 1:
                 if self.check_for_next():
-                    state_params = self.simplestate.next()
-                    self.pid.set(state_params["temp"])
+                    self.next_state()
+            elif self.state_params["temp"] - TEMP_TOLERANCE <= temp_current <= self.state_params["temp"] + TEMP_TOLERANCE:
+                if self.brew_timer is None:
+                    print("Start BrewTimer for ", self.simplestate.state, "and", self.state_params["time"], "seconds")
+                    brew_timer = BrewTimer(self.state_params["time"], self.next_state)
+                    brew_timer.start()
+
+
+    def next_state(self):
+        self.state_params = self.simplestate.next()
+        self.pid.set(self.state_params["temp"])
+        self.brew_timer = None
 
 
     def convert_temp(self, temp_raw, last_value):
@@ -80,7 +98,7 @@ class BrewDaemon:
         n = False
         try:
             next_raw = subprocess.check_output(["tail", "-1", "next_state.brew"], universal_newlines=True)
-            n = bool(next_raw)
+            n = next_raw.strip() == "True"
             if n:
                 os.system("echo '' > next_state.brew")
         finally:
