@@ -10,7 +10,7 @@ class SimpleState:
     MAISCHEN = "maischen"
     BETA = "beta"
     ALPHA = "alpha"
-    LEUTERN = "leutern"
+    LEUTERN = "laeutern"
     KOCHEN = "kochen"
     ENDE = "ende"
     recipe = None
@@ -20,7 +20,7 @@ class SimpleState:
         self.state_list = [(self.maischen, SimpleState.MAISCHEN),
                            (self.beta, SimpleState.BETA),
                            (self.alpha, SimpleState.ALPHA),
-                           (self.leutern, SimpleState.LEUTERN),
+                           (self.laeutern, SimpleState.LEUTERN),
                            (self.kochen, SimpleState.KOCHEN),
                            (self.end, SimpleState.ENDE)]
         self.state_list.reverse()
@@ -50,7 +50,7 @@ class SimpleState:
         print('alpha got', x)
         return x
 
-    def leutern(self, x):
+    def laeutern(self, x):
         state = self.LEUTERN
         print('leutern got', x)
         return x
