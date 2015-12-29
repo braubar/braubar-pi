@@ -27,7 +27,7 @@ SOCKET_PORT = 10001
 TEMP_TOLERANCE = 0.5
 
 logfile = "log/brewlog_" + time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime()) + ".log"
-logging.basicConfig(filename=logfile, level=logging.WARN, format='[BrewData] %(asctime)s %(message)s')
+logging.basicConfig(filename=logfile, level=logging.WARN, format='{%(asctime)s: %(message)s}')
 
 
 class BrewDaemon:
@@ -63,6 +63,8 @@ class BrewDaemon:
 
             # switches plugstripe based on output value
             self.temp_actor(output, temp_current)
+            logging.warning({"temp_actual": temp_current, "change": output, "state": self.state_params})
+
             timer_passed_checked = 0.0
             if self.brew_timer is not None:
                 timer_passed_checked = self.brew_timer.passed()
@@ -122,7 +124,6 @@ class BrewDaemon:
             print("powerstrip on ", pid_output)
             PowerStrip().switch(PowerStrip.PLUG_1, PowerStrip.OFF)
 
-        logging.warning([time.time(), temp_current, pid_output])
 
     def shutdown(self):
         self.powerstrip.all_off()
