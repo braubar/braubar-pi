@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import os
+
 from flask import Flask, jsonify
 from flask import render_template
 import json
@@ -32,8 +34,15 @@ def brewstate():
 
 @app.route('/brew/next')
 def next():
-    # TODO prüfen ob thread gestartet wurde
-    return "Not Implemented"
+    asd  = None
+    try:
+        os.system("echo 'True' > next_state.brew")
+        asd = '{"ok": True, "state": None}'
+    except:
+        print("next failed")
+        asd = '{"ok": False, "state": None}'
+    finally:
+        return jsonify(asd)
 
 
 @app.route('/brew/temp')
