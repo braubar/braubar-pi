@@ -1,12 +1,10 @@
 from helper.brewtimer import BrewTimer
-from pidwrapper import PIDWrapper
-from state import State
+from simplestate import SimpleState
 
 
 class BrewMachine():
     state = None
     rezept = None
-
 
     def __init__(self, state_list, rezept):
         self.stateList = state_list
@@ -36,8 +34,6 @@ class Maischen(State):
         # TODO starte temp control, release erst wenn ziel temp erreicht
 
         brew_timer = BrewTimer(self.time, self.release_state)
-        pid = PIDWrapper()
-        pid.start()
 
         return self.name
 
