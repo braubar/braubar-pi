@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import os
 
+import sys
 from flask import Flask, jsonify
 from flask import render_template
-import json
+from chartService import ChartService
 
 __author__ = 'oli@fesseler.info'
 __version__ = ('0', '0', '1')
@@ -34,7 +35,7 @@ def brewstate():
 
 @app.route('/brew/next')
 def next():
-    asd  = None
+    asd = None
     try:
         os.system("echo 'True' > next_state.brew")
         asd = '{"ok": True, "state": None}'
@@ -52,36 +53,21 @@ def temp():
 
 @app.route('/brew/chart')
 def chart():
-    temp_data = {}
-    return render_template('chart.html', temp_data=temp_data)
-    # return render_template('chart.html', temp_data="hello")
+    return render_template('chart.html')
 
 
 @app.route('/brew/chart/data')
 def chart_data():
-    temp_current = []
-    temp_date = []
-    temp_target = []
-    temp_change = []
-    last_temp = 0.0
-    count = 0
-    f = open("./log/brewlog_29-12-2015_00-54-13.log")
-    for line in f.readlines():
-        temp = line[26:-2].split()[3][:-1]
-        temp = float(temp)
-        if last_temp != temp or last_temp <= temp - 0.1 and temp + 0.1 >= last_temp:
-            temp_current.append(temp)
-            temp_target.append(line[26:-2].split()[1][:-1])
-            temp_date.append(line[1:24])
-            temp_change.append(line[26:-2].split()[5][:-1])
-        else:
-            count += 1
-        last_temp = temp
-    print("omitted", count, "lines")
-    return jsonify({"temp": temp_current, "date": temp_date, "target": temp_target, "change": temp_change});
+    temp_date, temp_current, temp_target, temp_change= ChartService.brew_chart(brew_id=brew_id)
+    return jsonify({"temp": temp_current, "date": temp_date, "target": temp_target, "change": temp_change})
 
 
 if __name__ == "__main__":
-    # start app in debugmode
-    app.debug = True
-    app.run(host="192.168.2.9")
+    try:
+        host = sys.argv[1]
+        brew_id = sys.argv[2]
+        # start app in debugmode
+        app.debug = True
+        app.run(host=host)
+    finally:
+        print("good beer, see ya")
