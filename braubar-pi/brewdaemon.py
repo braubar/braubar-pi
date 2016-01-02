@@ -22,7 +22,7 @@ MIN = -5.0
 MAX = 5.0
 WAIT_THREAD_TIMEOUT = 0.05
 WAIT_THREAD_NAME = "Thread_wait_temp"
-SOCKET_IP = '192.168.2.9'
+HOST_IP = '192.168.2.9'
 SOCKET_PORT = 10001
 TEMP_TOLERANCE = 0.5
 
@@ -36,6 +36,7 @@ class BrewDaemon:
     read_temp_socket = None
     temp_event = None
     brew_timer = None
+    brew_id = None
 
     def __init__(self):
         self.pid = Pid(P, I, D)
@@ -46,6 +47,7 @@ class BrewDaemon:
         self.powerstrip.all_off()
 
 
+        self.brew_id = int(round(time.time() * 1000))
 
     def run(self):
         last_value = 0.0
@@ -124,6 +126,11 @@ class BrewDaemon:
             print("powerstrip on ", pid_output)
             PowerStrip().switch(PowerStrip.PLUG_1, PowerStrip.OFF)
 
+    def start_flask(self, host=HOST_IP, brew_id=None):
+        args = ["python3", "flask_app.py", host]
+        if brew_id:
+            args.append(str(brew_id))
+        subprocess.Popen(args)
 
     def shutdown(self):
         self.powerstrip.all_off()
@@ -131,12 +138,15 @@ class BrewDaemon:
 
 
 if __name__ == "__main__":
+    brew_daemon = BrewDaemon()
 
     try:
-        brew_daemon = BrewDaemon()
+        brew_daemon.start_flask(brew_id=brew_daemon.brew_id)
         brew_daemon.run()
     except KeyboardInterrupt:
         print("BrewDaemon is shutting down ...")
+
     finally:
         brew_daemon.shutdown()
+
     print("bye")

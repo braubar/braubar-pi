@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
+import sys
 from flask import Flask, jsonify
 from flask import render_template
 import json
@@ -82,6 +83,11 @@ def chart_data():
 
 
 if __name__ == "__main__":
-    # start app in debugmode
-    app.debug = True
-    app.run(host="192.168.2.9")
+    try:
+        host = sys.argv[1]
+        brew_id = sys.argv[2]
+        # start app in debugmode
+        app.debug = True
+        app.run(host=host)
+    finally:
+        print("good beer, see ya")
