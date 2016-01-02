@@ -31,7 +31,7 @@ class ReadSocket:
                 try:
                     while True:
                         # Receive the data one byte at a time
-                        data = connection.recv(8)
+                        data = connection.recv(6)
                         if data:
                             # Send back in uppercase
                             result = data
