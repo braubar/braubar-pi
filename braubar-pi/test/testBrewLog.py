@@ -1,19 +1,18 @@
-import datetime
+
 
 from brewlog import BrewLog, BrewLogDAO
 
 log = BrewLog()
 
-# log.setup()
+log.log(43.0, 45.0, 5.0, 1, "einmaischen")
+log.log(45.0, 45.0, -5.0, 1, "einmaischen")
+log.log(45.4, 45.0, -5.0, 1, "einmaischen")
 
-dao = BrewLogDAO
-dao.change = 5.0
-dao.current_state = "einmaischen"
-dao.current_temp = 43.0
-dao.target_temp = 45.0
-dao.brew_time = datetime.datetime.now()
-dao.sensor_id = 1
 
-log.log(dao)
+print(log.readAll())
+
+print(log.getTempValues())
+
 
 log.shutdown()
+
