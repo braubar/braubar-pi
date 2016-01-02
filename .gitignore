@@ -3,3 +3,4 @@ __pycache__/
 braubar-pi/log/*
 !braubar-pi/log/__init__.py
 *.pyc
+*.db
