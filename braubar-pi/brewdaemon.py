@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import os
 import logging
 import time
@@ -139,9 +141,10 @@ class BrewDaemon:
 
 if __name__ == "__main__":
     brew_daemon = BrewDaemon()
-
+    if len(sys.argv) >= 2:
+        HOST_IP = sys.argv[1]
     try:
-        brew_daemon.start_flask(brew_id=brew_daemon.brew_id)
+        brew_daemon.start_flask(host=HOST_IP, brew_id=brew_daemon.brew_id)
         brew_daemon.run()
     except KeyboardInterrupt:
         print("BrewDaemon is shutting down ...")
