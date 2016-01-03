@@ -156,6 +156,7 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2:
         HOST_IP = sys.argv[1]
     try:
+        brew_daemon.start_receive_temp(host=HOST_IP)
         brew_daemon.assureComFileExists()
         brew_daemon.start_flask(host=HOST_IP, brew_id=brew_daemon.brew_id)
         brew_daemon.run()
