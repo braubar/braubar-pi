@@ -4,3 +4,5 @@ braubar-pi/log/*
 !braubar-pi/log/__init__.py
 *.pyc
 *.db
+_build/
+*.log
