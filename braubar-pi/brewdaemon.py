@@ -3,7 +3,6 @@ import logging
 import time
 import sys
 import subprocess
-from datetime import datetime
 
 sys.path.append('./libs')
 sys.path.append('./StateMachine')
