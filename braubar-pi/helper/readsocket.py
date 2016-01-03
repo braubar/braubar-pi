@@ -7,14 +7,13 @@ import time
 
 
 class ReadSocket:
-
     sock = None
 
     def __init__(self, ip, port):
         # Create a TCP/IP socket
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # Bind the socket to the port
-        server_address = (ip,port)
+        server_address = (ip, port)
         self.sock.bind(server_address)
         # Listen for incoming connections
         self.sock.listen(1)
@@ -53,4 +52,6 @@ class ReadSocket:
 
 
 if __name__ == "__main__":
-    ReadSocket('192.168.2.9', 10001).read()
+    ip = sys.argv[1]
+    port = int(sys.argv[2])
+    ReadSocket(ip, port).read()

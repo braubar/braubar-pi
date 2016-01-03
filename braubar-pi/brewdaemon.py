@@ -135,8 +135,8 @@ class BrewDaemon:
             args.append(str(brew_id))
         subprocess.Popen(args)
 
-    def start_receive_temp(self, host=HOST_IP):
-        args = ["python3", "helper/readsocket.py", host]
+    def start_receive_temp(self, host=HOST_IP, port=None):
+        args = ["python3", "helper/readsocket.py", host, str(port)]
         subprocess.Popen(args)
 
     def assureComFileExists(self):
@@ -156,14 +156,13 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2:
         HOST_IP = sys.argv[1]
     try:
-        brew_daemon.start_receive_temp(host=HOST_IP)
+        brew_daemon.start_receive_temp(host=HOST_IP, port=10001)
         brew_daemon.assureComFileExists()
         brew_daemon.start_flask(host=HOST_IP, brew_id=brew_daemon.brew_id)
         brew_daemon.run()
     except KeyboardInterrupt:
         print("BrewDaemon is shutting down ...")
-
     finally:
         brew_daemon.shutdown()
-        os.killpg(0, signal.SIGTERM)
+        # os.killpg(0, signal.SIGTERM)
     print("bye")
