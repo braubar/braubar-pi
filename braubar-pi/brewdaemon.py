@@ -138,12 +138,18 @@ class BrewDaemon:
         self.powerstrip.all_off()
         self.powerstrip.logout()
 
+    def assureComFileExists(self):
+        f = open("next_state.brew", 'w')
+        f.close()
+        f = open("/tmp/braubar.temp", 'w')
+        f.close()
 
 if __name__ == "__main__":
     brew_daemon = BrewDaemon()
     if len(sys.argv) >= 2:
         HOST_IP = sys.argv[1]
     try:
+        brew_daemon.assureComFileExists()
         brew_daemon.start_flask(host=HOST_IP, brew_id=brew_daemon.brew_id)
         brew_daemon.run()
     except KeyboardInterrupt:
