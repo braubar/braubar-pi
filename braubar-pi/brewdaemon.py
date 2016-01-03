@@ -2,6 +2,7 @@
 
 import os
 import logging
+import signal
 import time
 import sys
 import subprocess
@@ -134,9 +135,9 @@ class BrewDaemon:
             args.append(str(brew_id))
         subprocess.Popen(args)
 
-    def shutdown(self):
-        self.powerstrip.all_off()
-        self.powerstrip.logout()
+    def start_receive_temp(self, host=HOST_IP):
+        args = ["python3", "helper/readsocket.py", host]
+        subprocess.Popen(args)
 
     def assureComFileExists(self):
         f = open("next_state.brew", 'w')
@@ -144,8 +145,14 @@ class BrewDaemon:
         f = open("/tmp/braubar.temp", 'w')
         f.close()
 
+    def shutdown(self):
+        self.powerstrip.all_off()
+        self.powerstrip.logout()
+
+
 if __name__ == "__main__":
     brew_daemon = BrewDaemon()
+    os.setpgrp()
     if len(sys.argv) >= 2:
         HOST_IP = sys.argv[1]
     try:
@@ -157,5 +164,5 @@ if __name__ == "__main__":
 
     finally:
         brew_daemon.shutdown()
-
+        os.killpg(0, signal.SIGTERM)
     print("bye")
