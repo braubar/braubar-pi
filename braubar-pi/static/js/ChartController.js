@@ -2,7 +2,7 @@ $(document).ready(function () {
     // Get context with jQuery - using jQuery's .get() method.
     var ctx = $("#myChart").get(0).getContext("2d");
     // This will get the first returned node in the jQuery collection.
-    $.getJSON('http://192.168.2.9:5000/brew/chart/data', function (data) {
+    $.getJSON('/brew/chart/data', function (data) {
         chart(data)
     });
 
