@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import os
-
 import sys
-from flask import Flask, jsonify
-from flask import render_template
+
+sys.path.append('./helper')
+
+from flask import Flask, jsonify, render_template
 from chartService import ChartService
 
 __author__ = 'oli@fesseler.info'
@@ -58,7 +59,7 @@ def chart():
 
 @app.route('/brew/chart/data')
 def chart_data():
-    temp_date, temp_current, temp_target, temp_change= ChartService.brew_chart(brew_id=brew_id)
+    temp_date, temp_current, temp_target, temp_change = ChartService.brew_chart(brew_id=brew_id)
     return jsonify({"temp": temp_current, "date": temp_date, "target": temp_target, "change": temp_change})
 
 
