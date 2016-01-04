@@ -7,14 +7,6 @@ $(document).ready(function () {
     });
 
     function chart(temp_data) {
-
-
-
-        console.log(Object.keys(temp_data));
-        //var labels = Object.keys(temp_data);
-        //var temp_current =  $.map(temp_data, function(element,index) {return console.log(JSON.parse(element)); });
-        //var temp_target =  $.map(temp_data, function(element,index) {return element["temp_target"]});
-        console.log(temp_data.date)
         var data = {
             labels: temp_data.date,
             datasets: [
@@ -94,7 +86,7 @@ $(document).ready(function () {
 
         Chart.defaults.global = {
             // Boolean - Whether to animate the chart
-            animation: true,
+            animation: false,
             // Number - Number of animation steps
             animationSteps: 60,
             // String - Animation easing effect
