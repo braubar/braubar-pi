@@ -2,7 +2,6 @@
 
 import os
 import logging
-import signal
 import time
 import sys
 import subprocess
@@ -25,11 +24,11 @@ MIN = -5.0
 MAX = 5.0
 WAIT_THREAD_TIMEOUT = 0.05
 WAIT_THREAD_NAME = "Thread_wait_temp"
-HOST_IP = '192.168.2.9'
-SOCKET_PORT = 10001
+HOST_IP = '0.0.0.0'
+SENSOR_PORT = 50505
 TEMP_TOLERANCE = 0.5
 
-logfile = "log/brewlog_" + time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime()) + ".log"
+logfile = "../log/brewlog_" + time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime()) + ".log"
 logging.basicConfig(filename=logfile, level=logging.WARN, format='{%(asctime)s: %(message)s}')
 log = BrewLog()
 
@@ -59,16 +58,17 @@ class BrewDaemon:
         self.pid.set(self.state_params["temp"])
 
         while True:
-            temp_raw = subprocess.check_output(["tail", "-1", "/tmp/braubar.temp"], universal_newlines=True)
-            temp_current, last_value = self.convert_temp(temp_raw, last_value)
+            temp_raw = subprocess.check_output(["tail", "-1", "data/temp.brew"], universal_newlines=True)
+
+            temp_current, last_value, sensor_id = self.convert_temp(temp_raw, last_value)
 
             # calculates PID output value
             output = self.pid.step(dt=2.0, input=temp_current)
 
             # switches plugstripe based on output value
             self.temp_actor(output, temp_current)
-            logging.warning({"temp_actual": temp_current, "change": output, "state": self.state_params})
-            log.log(temp_current, self.state_params["temp"], output, 1, self.simplestate.state, self.brew_id)
+            logging.warning({"temp_actual": temp_current, "change": output, "state": self.state_params, "sensor": sensor_id})
+            log.log(temp_current, self.state_params["temp"], output, sensor_id, self.simplestate.state, self.brew_id)
 
             timer_passed_checked = 0.0
             if self.brew_timer is not None:
@@ -94,19 +94,19 @@ class BrewDaemon:
         self.brew_timer = None
 
     def convert_temp(self, temp_raw, last_value):
+        sensor_id = -1
         try:
-            temp = float(temp_raw)
+            sensor_id = int(temp_raw.split(":")[0])
+            temp = float(temp_raw.split(":")[1])
         except ValueError:
-            try:
-                temp = last_value
-            except ValueError:
-                temp = 0.0
-        return (temp, last_value)
+            temp = 0.0
+            print("Could not get correct temperature value")
+        return temp, last_value, sensor_id
 
     def check_for_next(self):
         n = False
         try:
-            next_raw = subprocess.check_output(["tail", "-1", "next_state.brew"], universal_newlines=True)
+            next_raw = subprocess.check_output(["tail", "-1", "data/next_state.brew"], universal_newlines=True)
             n = next_raw.strip() == "True"
             if n:
                 os.system("echo '' > next_state.brew")
@@ -136,13 +136,13 @@ class BrewDaemon:
         subprocess.Popen(args)
 
     def start_receive_temp(self, host=HOST_IP, port=None):
-        args = ["python3", "helper/readsocket.py", host, str(port)]
+        args = ["python3", "service/sensorserver.py", host, str(port)]
         subprocess.Popen(args)
 
     def assureComFileExists(self):
-        f = open("next_state.brew", 'w')
+        f = open("data/next_state.brew", 'w')
         f.close()
-        f = open("/tmp/braubar.temp", 'w')
+        f = open("data/temp.brew", 'w')
         f.close()
 
     def shutdown(self):
@@ -156,7 +156,7 @@ if __name__ == "__main__":
     if len(sys.argv) >= 2:
         HOST_IP = sys.argv[1]
     try:
-        brew_daemon.start_receive_temp(host=HOST_IP, port=10001)
+        brew_daemon.start_receive_temp(host=HOST_IP, port=SENSOR_PORT)
         brew_daemon.assureComFileExists()
         brew_daemon.start_flask(host=HOST_IP, brew_id=brew_daemon.brew_id)
         brew_daemon.run()
