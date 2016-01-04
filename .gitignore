@@ -6,3 +6,5 @@ braubar-pi/log/*
 *.db
 _build/
 *.log
+next_state.brew
+temp.brew
