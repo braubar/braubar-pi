@@ -111,7 +111,7 @@ class BrewDaemon:
             next_raw = subprocess.check_output(["tail", "-1", "data/next_state.brew"], universal_newlines=True)
             n = next_raw.strip() == "True"
             if n:
-                os.system("echo '' > next_state.brew")
+                os.system("echo '' > data/next_state.brew")
         finally:
             pass
         return n

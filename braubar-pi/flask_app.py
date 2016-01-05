@@ -38,7 +38,7 @@ def brewstate():
 def next():
     asd = None
     try:
-        os.system("echo 'True' > next_state.brew")
+        os.system("echo 'True' > data/next_state.brew")
         asd = '{"ok": True, "state": None}'
     except:
         print("next failed")
