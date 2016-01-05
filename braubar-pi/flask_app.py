@@ -61,11 +61,13 @@ def chart():
 @app.route('/brew/chart/data_old')
 def chart_data_old():
     temp_date, temp_current, temp_target, temp_change = ChartService.brew_chart(brew_id=brew_id)
-    return jsonify({"temp": temp_current, "date": temp_date, "target": temp_target, "change": temp_change})@app.route('/brew/chart/data')
-
+    return jsonify({"temp": temp_current, "date": temp_date, "target": temp_target, "change": temp_change}) \
+ \
+ \
 @app.route('/brew/chart/data')
 def chart_data():
     return ChartService.brew_chart(brew_id=brew_id)
+
 
 @app.route('/brew/chart/last')
 def last_row():
