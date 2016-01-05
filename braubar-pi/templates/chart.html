@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>BrewChart</title>
-    <script src="../static/js/jquery-1.11.3.js"></script>
-    <script src="../static/js/Chart.min.js"></script>
-    <script src="../static/js/ChartController.js"></script>
-{#    <script type=text/javascript src="{{ url_for('static', filename='jquery-1.11.3.js') }}"></script>#}
-{#    <script type=text/javascript src="{{ url_for('static', filename='Chart.min.js') }}"></script>#}
-{#    <script type=text/javascript src="{{ url_for('static', filename='ChartController.js') }}"></script>#}
+    <script src="/static/js/jquery-1.11.3.js"></script>
+    <script src="/static/js/Chart.min.js"></script>
+    <script src="/static/js/ChartController.js"></script>
 </head>
 <body>
-<canvas id="myChart" width="1300" height="600"></canvas>
+<h1>Brau Vorgang: {{ brew_id }}</h1>
+
+<canvas id="myChart" width="700" height="400"></canvas>
+
 </body>
 </html>

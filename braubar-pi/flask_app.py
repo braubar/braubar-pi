@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import json
 
 sys.path.append('./service')
 
@@ -21,7 +22,7 @@ def index():
 @app.route('/hello/')
 @app.route('/hello/<name>')
 def hello(name=None):
-    return render_template('hello.html', name=name)
+    return render_template('starter_template.html', name=name)
 
 
 @app.route('/brew/start')
@@ -39,10 +40,10 @@ def next():
     asd = None
     try:
         os.system("echo 'True' > data/next_state.brew")
-        asd = '{"ok": True, "state": None}'
+        asd = {"ok": True, "state": None}
     except:
         print("next failed")
-        asd = '{"ok": False, "state": None}'
+        asd = {"ok": False, "state": None}
     finally:
         return jsonify(asd)
 
@@ -54,13 +55,21 @@ def temp():
 
 @app.route('/brew/chart')
 def chart():
-    return render_template('chart.html')
+    return render_template('chart.html', brew_id=brew_id)
 
+
+@app.route('/brew/chart/data_old')
+def chart_data_old():
+    temp_date, temp_current, temp_target, temp_change = ChartService.brew_chart(brew_id=brew_id)
+    return jsonify({"temp": temp_current, "date": temp_date, "target": temp_target, "change": temp_change})@app.route('/brew/chart/data')
 
 @app.route('/brew/chart/data')
 def chart_data():
-    temp_date, temp_current, temp_target, temp_change = ChartService.brew_chart(brew_id=brew_id)
-    return jsonify({"temp": temp_current, "date": temp_date, "target": temp_target, "change": temp_change})
+    return ChartService.brew_chart(brew_id=brew_id)
+
+@app.route('/brew/chart/last')
+def last_row():
+    return jsonify(ChartService.last_row(brew_id=brew_id))
 
 
 if __name__ == "__main__":

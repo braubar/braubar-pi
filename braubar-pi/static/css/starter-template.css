@@ -1,0 +1,40 @@
+body {
+    padding-top: 50px;
+}
+
+.starter-template {
+    padding: 15px;
+    text-align: center;
+}
+
+.navbar {
+    margin-bottom: 10px;
+}
+
+.container {
+}
+
+h1 {
+    font-size: 26px;
+}
+
+/*chart section*/
+.axis path, .axis line {
+    fill: none;
+    stroke: #777;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-family: 'Arial';
+    font-size: 13px;
+}
+
+.tick {
+    stroke-dasharray: 1, 2;
+}
+
+.bar {
+    fill: FireBrick;
+}
+
