@@ -2,7 +2,7 @@
 import os
 import sys
 
-sys.path.append('./helper')
+sys.path.append('./service')
 
 from flask import Flask, jsonify, render_template
 from chartService import ChartService

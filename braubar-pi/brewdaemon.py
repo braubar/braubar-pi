@@ -68,7 +68,8 @@ class BrewDaemon:
 
             # switches plugstripe based on output value
             self.temp_actor(output, temp_current)
-            logging.warning({"temp_actual": temp_current, "change": output, "state": self.state_params, "sensor": sensor_id})
+            logging.warning(
+                    {"temp_actual": temp_current, "change": output, "state": self.state_params, "sensor": sensor_id})
             log.log(temp_current, self.state_params["temp"], output, sensor_id, self.simplestate.state, self.brew_id)
 
             timer_passed_checked = 0.0
