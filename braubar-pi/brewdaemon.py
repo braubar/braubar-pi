@@ -2,6 +2,7 @@
 
 import os
 import logging
+import signal
 import time
 import sys
 import subprocess
@@ -130,8 +131,9 @@ class BrewDaemon:
             PowerStrip().switch(PowerStrip.PLUG_1, PowerStrip.OFF)
 
     def start_flask(self, host=HOST_IP, brew_id=None):
-        args = ["python3", "flask_app.py", host]
+        args = ["python3", "flask_app.py", "--host", host]
         if brew_id:
+            args.append("--id")
             args.append(str(brew_id))
         subprocess.Popen(args)
 
@@ -151,10 +153,22 @@ class BrewDaemon:
 
 
 if __name__ == "__main__":
+    import atexit
+    import argparse
+
     brew_daemon = BrewDaemon()
+
+    parser = argparse.ArgumentParser(description="BrauBar daemon at your service.")
+    parser.add_argument('--host', help="IP-Address to listen on. Default is 0.0.0.0", default="0.0.0.0")
+    args = parser.parse_args()
+
+    atexit.register(os.killpg, 0, signal.SIGTERM)
+    atexit.register(brew_daemon.shutdown)
+
     os.setpgrp()
-    if len(sys.argv) >= 2:
-        HOST_IP = sys.argv[1]
+
+    HOST_IP = args.host
+
     try:
         brew_daemon.start_receive_temp(host=HOST_IP, port=SENSOR_PORT)
         brew_daemon.assureComFileExists()

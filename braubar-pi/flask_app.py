@@ -64,9 +64,16 @@ def chart_data():
 
 
 if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser(description="BrauBar webserver at your service.")
+    parser.add_argument('--host', help="IP-Address to listen on. Default is 0.0.0.0", default="0.0.0.0")
+    parser.add_argument('-i', '--id', help="brew_id to identify the current brew process. "
+                                           "if no id is given, it shall return all brews")
+    args = parser.parse_args()
     try:
-        host = sys.argv[1]
-        brew_id = sys.argv[2]
+        host = args.host
+        brew_id = args.id
         # start app in debugmode
         app.debug = True
         app.run(host=host)
