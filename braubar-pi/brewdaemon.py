@@ -17,6 +17,7 @@ from simplestate import SimpleState
 from PIDs import Pid
 from powerstrip import PowerStrip
 from brewlog import BrewLog
+from brewconfig import BrewConfig
 
 P = 8000.0
 I = 0.0
@@ -42,12 +43,14 @@ class BrewDaemon:
     brew_timer = None
     brew_id = None
     chart_service = None
+    config = None
 
     def __init__(self):
+        self.config = BrewConfig()
         self.pid = Pid(P, I, D)
         self.pid.range(MIN, MAX)
         self.pid.set(0.0)
-        self.powerstrip = PowerStrip()
+        self.powerstrip = PowerStrip(self.config.get("powerstrip")["url"])
         self.powerstrip.all_off()
         self.simplestate = SimpleState()
         self.brew_id = int(round(time.time() * 1000))
