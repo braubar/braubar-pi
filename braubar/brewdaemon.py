@@ -4,13 +4,7 @@ import os
 import logging
 import signal
 import time
-import sys
 import subprocess
-
-sys.path.append('./libs')
-sys.path.append('./StateMachine')
-sys.path.append('./helper')
-sys.path.append('./service')
 
 from service.brewtimer import BrewTimer
 from service.simplestate import SimpleState

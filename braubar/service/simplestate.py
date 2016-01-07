@@ -1,5 +1,4 @@
 import json
-import os
 
 RECIPE_FILE = "../config/recipe.json"
 
