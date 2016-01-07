@@ -12,8 +12,8 @@ $(document).ready(function () {
 function InitChart(data) {
 
     var lineData = data;
-    var calcTime = function(start, end) {
-        return (Date.parse(start) - end)/1000/60
+    var calcTime = function(start, current) {
+        return (Date.parse(current) - start)/1000/60
     };
 
     var vis = d3.select("#mychart"),
@@ -26,10 +26,10 @@ function InitChart(data) {
             left: 50
         },
         xRange = d3.scale.linear().range([MARGINS.left, WIDTH - MARGINS.right]).domain([d3.min(lineData, function (d) {
-            return calcTime(d.date, d.brew_id);
+            return calcTime(d.brew_id, d.date);
         }),
             d3.max(lineData, function (d) {
-                return calcTime(d.date, d.brew_id);
+                return calcTime(d.brew_id, d.date);
             })
         ]),
 
@@ -65,7 +65,7 @@ function InitChart(data) {
 
     var currentTempLine = d3.svg.line()
         .x(function (d) {
-            return xRange(calcTime(d.date, d.brew_id));
+            return xRange(calcTime(d.brew_id, d.date));
         })
         .y(function (d) {
             return yRange(d.current);
@@ -74,7 +74,7 @@ function InitChart(data) {
 
     var targetTempLine = d3.svg.line()
         .x(function (d) {
-            return xRange(calcTime(d.date, d.brew_id));
+            return xRange(calcTime(d.brew_id, d.date));
         })
         .y(function (d) {
             return yRange(d.target);
