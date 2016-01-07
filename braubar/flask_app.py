@@ -1,12 +1,8 @@
 # -*- coding: utf-8 -*-
 import os
-import sys
-import json
-
-sys.path.append('./service')
 
 from flask import Flask, jsonify, render_template
-from chartService import ChartService
+from service.chartService import ChartService
 
 __author__ = 'oli@fesseler.info'
 __version__ = ('0', '0', '1')

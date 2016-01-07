@@ -12,12 +12,12 @@ sys.path.append('./StateMachine')
 sys.path.append('./helper')
 sys.path.append('./service')
 
-from brewtimer import BrewTimer
-from simplestate import SimpleState
-from PIDs import Pid
-from powerstrip import PowerStrip
-from brewlog import BrewLog
-from brewconfig import BrewConfig
+from service.brewtimer import BrewTimer
+from service.simplestate import SimpleState
+from libs.PIDs import Pid
+from service.powerstrip import PowerStrip
+from service.brewlog import BrewLog
+from service.brewconfig import BrewConfig
 
 P = 8000.0
 I = 0.0
@@ -29,8 +29,13 @@ WAIT_THREAD_NAME = "Thread_wait_temp"
 HOST_IP = '0.0.0.0'
 SENSOR_PORT = 50505
 TEMP_TOLERANCE = 0.5
+NEXT_STATE_FILE = "../data/next_state.brew"
+LOG_BASE = "../log/brewlog_"
+TEMP_RAW_FILE = "../data/temp.brew"
+FLASK_FILE = "../braubar/flask_app.py"
+SENSOR_SERVER_FILE = "../braubar/service/sensorserver.py"
 
-logfile = "../log/brewlog_" + time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime()) + ".log"
+logfile = LOG_BASE + time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime()) + ".log"
 logging.basicConfig(filename=logfile, level=logging.WARN, format='{%(asctime)s: %(message)s}')
 log = BrewLog()
 
@@ -62,7 +67,7 @@ class BrewDaemon:
         self.pid.set(self.state_params["temp"])
 
         while True:
-            temp_raw = subprocess.check_output(["tail", "-1", "data/temp.brew"], universal_newlines=True)
+            temp_raw = subprocess.check_output(["tail", "-1", TEMP_RAW_FILE], universal_newlines=True)
 
             temp_current, last_value, sensor_id = self.convert_temp(temp_raw, last_value)
 
@@ -111,10 +116,10 @@ class BrewDaemon:
     def check_for_next(self):
         n = False
         try:
-            next_raw = subprocess.check_output(["tail", "-1", "data/next_state.brew"], universal_newlines=True)
+            next_raw = subprocess.check_output(["tail", "-1", NEXT_STATE_FILE], universal_newlines=True)
             n = next_raw.strip() == "True"
             if n:
-                os.system("echo '' > data/next_state.brew")
+                os.system("echo '' > " + NEXT_STATE_FILE)
         finally:
             pass
         return n
@@ -135,20 +140,20 @@ class BrewDaemon:
             PowerStrip().switch(PowerStrip.PLUG_1, PowerStrip.OFF)
 
     def start_flask(self, host=HOST_IP, brew_id=None):
-        args = ["python3", "flask_app.py", "--host", host]
+        args = ["python3", FLASK_FILE, "--host", host]
         if brew_id:
             args.append("--id")
             args.append(str(brew_id))
         subprocess.Popen(args)
 
     def start_receive_temp(self, host=HOST_IP, port=None):
-        args = ["python3", "service/sensorserver.py", host, str(port)]
+        args = ["python3", SENSOR_SERVER_FILE, host, str(port)]
         subprocess.Popen(args)
 
     def assureComFileExists(self):
-        f = open("data/next_state.brew", 'w')
+        f = open(NEXT_STATE_FILE, 'w')
         f.close()
-        f = open("data/temp.brew", 'w')
+        f = open(TEMP_RAW_FILE, 'w')
         f.close()
 
     def shutdown(self):

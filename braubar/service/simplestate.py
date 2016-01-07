@@ -1,7 +1,7 @@
 import json
+import os
 
-from brewtimer import BrewTimer
-
+RECIPE_FILE = "../config/recipe.json"
 
 class SimpleState:
     count = 1
@@ -24,7 +24,7 @@ class SimpleState:
                            (self.kochen, SimpleState.KOCHEN),
                            (self.end, SimpleState.ENDE)]
         self.state_list.reverse()
-        self.recipe = json.load(open("service/recipe.json", 'r'))
+        self.recipe = json.load(open(RECIPE_FILE, 'r'))
 
     def start(self):
         if not self.state:

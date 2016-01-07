@@ -2,6 +2,7 @@ from socketserver import UDPServer, DatagramRequestHandler
 import os
 
 SYNC_BITS = b'\x0f\x00\x0f\x0f'
+TEMP_RAW_FILE = "../data/temp.brew"
 
 
 class Handler(DatagramRequestHandler):
@@ -12,7 +13,7 @@ class Handler(DatagramRequestHandler):
         id_data = int(raw_data[6])
         end_sync = raw_data[7:]
         if start_sync == end_sync == SYNC_BITS:
-            f = open("data/temp.brew", mode='a')
+            f = open(TEMP_RAW_FILE, mode='a')
             s = str(id_data) + ':' + str(temp) + os.linesep
             f.write(s)
             f.close()
