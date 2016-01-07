@@ -10,7 +10,7 @@ class BrewLog:
         self.db = self.conn.cursor()
 
     def log(self, current_temp, target_temp, change, sensor_id, current_state, brew_id):
-        brew_time = datetime.now()
+        brew_time = datetime.now().isoformat()
         try:
             self.db.execute(
                     '''INSERT INTO brewlog

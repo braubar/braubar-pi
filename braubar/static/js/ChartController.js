@@ -1,7 +1,7 @@
 $(document).ready(function () {
     // Get context with jQuery - using jQuery's .get() method.
     // This will get the first returned node in the jQuery collection.
-    $.getJSON('/brew/chart/data', function (data) {
+    $.getJSON('/chart/data', function (data) {
         InitChart(data);
     });
 
@@ -81,6 +81,15 @@ function InitChart(data) {
         })
         .interpolate('linear');
 
+    var change = d3.svg.line()
+        .x(function (d) {
+            return xRange(calcTime(d.brew_id, d.date));
+        })
+        .y(function (d) {
+            return yRange(d.change);
+        })
+        .interpolate('linear');
+
     vis.append("svg:path")
         .attr("d", currentTempLine(data))
         .attr("stroke", "blue")
@@ -93,4 +102,9 @@ function InitChart(data) {
         .attr("stroke-width", 2)
         .attr("fill", "none");
 
+    vis.append("svg:path")
+        .attr("y", change(data))
+        .attr("stroke", "red")
+        .attr("stroke-width", 2)
+        .attr("fill", "none");
 }

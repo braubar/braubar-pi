@@ -3,6 +3,7 @@ import json
 CONFIG_FILE = "../config/config.json"
 RECIPE_FILE = "../config/recipe.json"
 TEMP_RAW_FILE = "../data/temp.brew"
+NEXT_STATE_FILE = "../data/next_state.brew"
 
 
 class BrewConfig:

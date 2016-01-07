@@ -3,6 +3,7 @@ import os
 
 from flask import Flask, jsonify, render_template
 from service.chartService import ChartService
+import brewconfig
 
 __author__ = 'oli@fesseler.info'
 __version__ = ('0', '0', '1')
@@ -12,30 +13,30 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return "index"
+    last_row = ChartService.last_row(brew_id)
+    return render_template('index.html', brew_id=brew_id, brew_state=last_row)
 
 
-@app.route('/hello/')
-@app.route('/hello/<name>')
-def hello(name=None):
-    return render_template('starter_template.html', name=name)
-
-
-@app.route('/brew/start')
+@app.route('/start')
 def brewStart():
     return "Not Implemented"
 
 
-@app.route('/brew/state')
-def brewstate():
-    return "Not Implemented"
+@app.route('/status/brew')
+def brew_state():
+    return ChartService.brew_status(brew_id=brew_id)
 
 
-@app.route('/brew/next')
+@app.route('/status/system')
+def system_state():
+    return ChartService.system_status(brew_id=brew_id)
+
+
+@app.route('/next')
 def next():
     asd = None
     try:
-        os.system("echo 'True' > data/next_state.brew")
+        os.system("echo 'True' > " + brewconfig.NEXT_STATE_FILE)
         asd = {"ok": True, "state": None}
     except:
         print("next failed")
@@ -44,28 +45,17 @@ def next():
         return jsonify(asd)
 
 
-@app.route('/brew/temp')
+@app.route('/temp')
 def temp():
     return "Not Implemented"
 
 
-@app.route('/brew/chart')
-def chart():
-    return render_template('chart.html', brew_id=brew_id)
-
-
-@app.route('/brew/chart/data_old')
-def chart_data_old():
-    temp_date, temp_current, temp_target, temp_change = ChartService.brew_chart(brew_id=brew_id)
-    return jsonify({"temp": temp_current, "date": temp_date, "target": temp_target, "change": temp_change})
-
-
-@app.route('/brew/chart/data')
+@app.route('/chart/data')
 def chart_data():
     return ChartService.brew_chart(brew_id=brew_id)
 
 
-@app.route('/brew/chart/last')
+@app.route('/chart/last_row')
 def last_row():
     return jsonify(ChartService.last_row(brew_id=brew_id))
 
