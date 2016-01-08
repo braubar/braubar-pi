@@ -1,5 +1,6 @@
 import sqlite3
 import json
+import math
 
 TOLERANCE = 0.2
 
@@ -88,3 +89,21 @@ class ChartService:
     @staticmethod
     def system_status(brew_id):
         return json.dumps({"status": 501})
+
+    @staticmethod
+    def temp_increase(brew_id):
+        conn = sqlite3.connect('brew.db')
+        db = conn.cursor()
+        stmt_args = []
+        stmt = '''select brew_time, current_temp
+                    from brewlog
+                    where brew_id=?
+                    and datetime(brew_time) >= datetime(current_timestamp,'-1 minutes', "localtime")
+                    order by brew_time desc;
+                '''
+        stmt_args.append(brew_id)
+
+        db.execute(stmt, stmt_args)
+        data = db.fetchall()
+        conn.close()
+        return round(data.pop(0)[1] - data.pop()[1], 2)

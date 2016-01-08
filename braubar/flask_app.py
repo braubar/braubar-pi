@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import datetime
 
 from flask import Flask, jsonify, render_template
 from service.chartService import ChartService
@@ -13,8 +14,15 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    last_row = ChartService.last_row(brew_id)
-    return render_template('index.html', brew_id=brew_id, brew_state=last_row)
+    status = ChartService.last_row(brew_id)
+    # 2016-01-08T00:44:47.848484
+    brew_time = datetime.datetime.strptime(status["brew_time"], "%Y-%m-%dT%H:%M:%S.%f")
+    brew_start = datetime.datetime.fromtimestamp(status["brew_id"]/1000.0)
+    duration = (brew_time - brew_start)
+    status["duration"] = str(duration).split(".")[0]
+    status["temp_increase"] = ChartService.temp_increase(brew_id)
+
+    return render_template('index.html', brew_id=brew_id, brew_state=status)
 
 
 @app.route('/start')

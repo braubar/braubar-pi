@@ -31,36 +31,36 @@ class SimpleState:
         raise Exception("Braubar is already running")
 
     def maischen(self, x):
-        state = self.MAISCHEN
+        self.state = self.MAISCHEN
 
         print("warten, bis der nächste aufgerufen wird. ")
-        return self.recipe[state]
+        return self.recipe[self.state]
 
     def beta(self, x):
-        state = self.BETA
+        self.state = self.BETA
         # x,time muss noch konvertiert werden
         delay = x.get('time')
         print('beta will be finished after ', delay)
-        return x
+        return self.recipe[self.state]
 
     def alpha(self, x):
-        state = self.ALPHA
+        self.state = self.ALPHA
         delay = x.get('time')
         print('alpha got', x)
-        return x
+        return self.recipe[self.state]
 
     def laeutern(self, x):
-        state = self.LEUTERN
+        self.state = self.LEUTERN
         print('leutern got', x)
-        return x
+        return self.recipe[self.state]
 
     def kochen(self, x):
-        state = self.KOCHEN
+        self.state = self.KOCHEN
         print('kochen got', x)
-        return x
+        return self.recipe[self.state]
 
     def end(self, x):
-        state = self.ENDE
+        self.state = self.ENDE
         print("this is the end, my friend")
         exit(0)
 

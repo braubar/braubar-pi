@@ -34,6 +34,31 @@
 
 <body>
 
+<div class="row">
+    <div class="head-values col-sm-1"></div>
+    <div class="head-values col-sm-2">
+        <div class="top-labels" id="curent_temp_label">Temp current:</div>
+        <div class="top-values" id="current_temp_val">{{brew_state.current_temp}}</div>
+    </div>
+    <div class="head-values col-sm-2">
+        <div class="top-labels" id="target_temp_label">Temp target:</div>
+        <div class="top-values" id="target_temp_val">{{brew_state.target_temp}}</div>
+    </div>
+    <div class="head-values col-sm-2">
+        <div class="top-labels" id="brew_time_label">Time exceded:</div>
+        <div class="top-values" id="brew_time_val">{{brew_state.duration}}</div>
+    </div>
+    <div class="head-values col-sm-2">
+        <div class="top-labels" id="state_label">State</div>
+        <div class="top-values" id="state_val">{{brew_state.current_state}}</div>
+    </div>
+    <div class="head-values col-sm-2">
+        <div class="top-labels" id="temp_increase_label">Temp Increase</div>
+        <div class="top-values" id="temp_increase_val">{{brew_state.temp_increase}}</div>
+    </div>
+    <div class="head-values col-sm-1"></div>
+</div>
+
 <nav class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
@@ -56,18 +81,12 @@
     </div><!-- /.container -->
 </nav><!-- /.navbar -->
 
-<div class="container">
-    <div class="row">
-        <div class="col-md-1">
-            <pre>{{brew_state.current_temp}}</pre>
-        </div>
-    </div>
-    <div class="starter-template">
-        <div class="chart-responsive">
-            <svg id="mychart" height="300" width="690"></svg>
-        </div><!-- /.chart-responsive-->
-    </div><!-- /.starter-template-->
-</div><!-- /.container -->
+
+<div class="starter-template">
+    <div class="chart-responsive">
+        <svg id="mychart" height="300" width="690"></svg>
+    </div><!-- /.chart-responsive-->
+</div><!-- /.starter-template-->
 
 
 <!-- Bootstrap core JavaScript
