@@ -53,7 +53,6 @@ function InitChart(data) {
             .orient("left")
             .tickSubdivide(true);
 
-
     vis.append("svg:g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + (HEIGHT - MARGINS.bottom) + ")")
@@ -108,5 +107,4 @@ function InitChart(data) {
         .attr("stroke", "green")
         .attr("stroke-width", 2)
         .attr("fill", "none");
-
 }

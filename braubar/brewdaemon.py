@@ -22,7 +22,7 @@ WAIT_THREAD_TIMEOUT = 0.05
 WAIT_THREAD_NAME = "Thread_wait_temp"
 HOST_IP = '0.0.0.0'
 SENSOR_PORT = 50505
-TEMP_TOLERANCE = 0.3
+TEMP_TOLERANCE = 0.0
 NEXT_STATE_FILE = "../data/next_state.brew"
 LOG_BASE = "../log/brewlog_"
 TEMP_RAW_FILE = "../data/temp.brew"
@@ -85,7 +85,6 @@ class BrewDaemon:
             if not self.state_params["auto"] == 1:
                 if self.check_for_next():
                     self.next_state()
-
             elif self.state_params["temp"] - TEMP_TOLERANCE <= temp_current <= self.state_params["temp"] + TEMP_TOLERANCE:
                 if self.brew_timer is None:
                     print("Start BrewTimer for ", self.simplestate.state, "and", self.state_params["time"], "seconds")
