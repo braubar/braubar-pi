@@ -1,0 +1,32 @@
+{
+  "maischen": {
+    "name": "Maischen",
+    "temp": 40.0,
+    "time": 0,
+    "auto": 0
+  },
+  "beta": {
+    "name": "beta-Amylase",
+    "temp": 50.0,
+    "time": 600,
+    "auto": 1
+  },
+  "alpha": {
+    "name": "alpha-Amylase",
+    "temp": 60.0,
+    "time": 600,
+    "auto": 1
+  },
+  "laeutern": {
+    "name": "Laeutern",
+    "temp": 70.0,
+    "time": 0,
+    "auto": 0
+  },
+  "kochen": {
+    "name": "Kochen",
+    "temp": 80.0,
+    "time": 0,
+    "auto": 0
+  }
+}

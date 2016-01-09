@@ -1,0 +1,15 @@
+{
+ "sensors": {},
+ "test": {
+  "foo": "123",
+  "bar": "asd",
+  "baz": "FOO"
+ },
+ "powerstrip": {
+  "url": "http://192.168.2.36/",
+  "password": "braubar"
+ },
+ "braubar": {
+  "version": "0.1.0"
+ }
+}
