@@ -14,7 +14,7 @@ from service.brewlog import BrewLog
 from service.brewconfig import BrewConfig
 # parameter for PID controller
 P = 8000.0
-I = 0.0 # set so zero because cooling is not possible
+I = 0.0 # set to zero because cooling is not possible
 D = 350000.0
 MIN = -100000.0
 MAX = 100000.0
