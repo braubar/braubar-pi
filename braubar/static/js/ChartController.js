@@ -1,11 +1,7 @@
 $(document).ready(function () {
-    // Get context with jQuery - using jQuery's .get() method.
-    // This will get the first returned node in the jQuery collection.
     $.getJSON('/chart/data', function (data) {
         InitChart(data);
     });
-
-//https://github.com/gildean/PiTherm
 });
 
 

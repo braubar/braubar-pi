@@ -33,9 +33,11 @@
 </head>
 
 <body>
-
+<div class="container">
 <div class="row">
-    <div class="head-values col-sm-1"></div>
+    <button id="refresh" class="head-values col-sm-1 refresh" onclick="refresh()">
+        <span  class="glyphicon glyphicon-refresh"></span>
+    </button>
     <div class="head-values col-sm-2">
         <div class="top-labels" id="curent_temp_label">Temp current:</div>
         <div class="top-values" id="current_temp_val">{{brew_state.current_temp}}</div>
@@ -56,31 +58,10 @@
         <div class="top-labels" id="temp_increase_label">Temp Increase</div>
         <div class="top-values" id="temp_increase_val">{{brew_state.temp_increase}}</div>
     </div>
-    <div class="head-values col-sm-1"></div>
+    <button id="next" class="head-values col-sm-1 next" onclick="next()">
+        <span  class="glyphicon glyphicon-play"></span>
+    </button>
 </div>
-
-<nav class="navbar navbar-inverse navbar-fixed-top">
-    <div class="container">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
-                    aria-expanded="false" aria-controls="navbar">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">BrauBar</a>
-        </div>
-        <div id="navbar" class="collapse navbar-collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Brewboard</a></li>
-                <li><a href="/start">Start</a></li>
-                <li><a href="/next">Next</a></li>
-            </ul>
-        </div><!--/.nav-collapse -->
-    </div><!-- /.container -->
-</nav><!-- /.navbar -->
-
 
 <div class="starter-template">
     <div class="chart-responsive">
@@ -88,6 +69,35 @@
     </div><!-- /.chart-responsive-->
 </div><!-- /.starter-template-->
 
+    <div class="row footer">
+        <button id class="footer-values col-sm-1 refresh" onclick="refresh()">
+            <span class="glyphicon glyphicon-refresh"></span>
+        </button>
+        <div class="footer-values col-sm-2">
+            <div class="footer-labels" id="">Temp current:</div>
+            <div class="footer-values" id="">{{brew_state.current_temp}}</div>
+        </div>
+        <div class="footer-values col-sm-2">
+            <div class="footer-labels" id="">Temp target:</div>
+            <div class="footer-values" id="">{{brew_state.target_temp}}</div>
+        </div>
+        <div class="footer-values col-sm-2">
+            <div class="footer-labels" id="">Time exceded:</div>
+            <div class="footer-values" id="">{{brew_state.duration}}</div>
+        </div>
+        <div class="footer-values col-sm-2">
+            <div class="footer-labels" id="">State</div>
+            <div class="footer-values" id="">{{brew_state.current_state}}</div>
+        </div>
+        <div class="footer-values col-sm-2">
+            <div class="footer-labels" id="">Temp Increase</div>
+            <div class="footer-values" id="">{{brew_state.temp_increase}}</div>
+        </div>
+        <button id="" class="footer-values col-sm-1 next" onclick="next()">
+            <span class="glyphicon glyphicon-play"></span>
+        </button>
+    </div>
+</div>
 
 <!-- Bootstrap core JavaScript
 ================================================== -->
@@ -99,5 +109,6 @@
 <script src="/static/js/ie10-viewport-bug-workaround.js"></script>
 <script src="/static/js/d3.js"></script>
 <script src="/static/js/ChartController.js"></script>
+<script src="/static/js/BrewBoard.js"></script>
 </body>
 </html>
