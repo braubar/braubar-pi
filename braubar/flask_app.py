@@ -4,7 +4,7 @@ import datetime
 
 from flask import Flask, jsonify, render_template
 from service.chartService import ChartService
-import brewconfig
+import service.brewconfig
 
 __author__ = 'oli@fesseler.info'
 __version__ = ('0', '0', '1')
@@ -14,21 +14,17 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    cs = ChartService()
-    status = cs.last_row(brew_id)
-    # 2016-01-08T00:44:47.848484
-    brew_time = datetime.datetime.strptime(status["brew_time"], "%Y-%m-%dT%H:%M:%S.%f")
-    brew_start = datetime.datetime.fromtimestamp(status["brew_id"]/1000.0)
-    duration = (brew_time - brew_start)
-    status["duration"] = str(duration).split(".")[0]
-    status["temp_increase"] = cs.temp_increase(brew_id)
-    status["time_passed"] = ""
-    return render_template('index.html', brew_id=brew_id, brew_state=status)
+    return render_template('index.html', brew_id=brew_id, brew_state=ChartService().status(brew_id))
 
 
 @app.route('/start')
 def brewStart():
     return "Not Implemented"
+
+
+@app.route('/status')
+def status():
+    return jsonify(ChartService().status(brew_id))
 
 
 @app.route('/status/brew')

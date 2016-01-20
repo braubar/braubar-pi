@@ -87,6 +87,17 @@ class ChartService:
     def system_status(self, brew_id):
         return json.dumps({"status": 501})
 
+    def status(self, brew_id):
+        status = self.last_row(brew_id)
+        brew_time = datetime.datetime.strptime(status["brew_time"], "%Y-%m-%dT%H:%M:%S.%f")
+        brew_start = datetime.datetime.fromtimestamp(status["brew_id"]/1000.0)
+        duration = (brew_time - brew_start)
+        status["duration"] = str(duration).split(".")[0]
+        status["temp_increase"] = self.temp_increase(brew_id)
+        status["time_passed"] = ""
+        return status
+
+
     def temp_increase(self, brew_id):
         stmt_args = []
         stmt = '''select brew_id, brew_time, current_temp
