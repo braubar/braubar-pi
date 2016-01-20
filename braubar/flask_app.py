@@ -4,7 +4,7 @@ import datetime
 
 from flask import Flask, jsonify, render_template
 from service.chartService import ChartService
-import brewconfig
+import service.brewconfig
 
 __author__ = 'oli@fesseler.info'
 __version__ = ('0', '0', '1')
