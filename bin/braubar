@@ -5,6 +5,9 @@ import atexit
 import argparse
 import signal
 import sys
+
+import subprocess
+
 if os.getcwd().endswith("bin"):
     sys.path.append("../braubar")
 else:
@@ -32,6 +35,11 @@ try:
     brew_daemon.assureComFileExists()
     brew_daemon.start_flask(host=HOST_IP, brew_id=brew_daemon.brew_id)
     brew_daemon.run()
+    subprocess.call(['epiphany',
+                     '--application-mode',
+                     '--profile="/home/pi/.config/"',
+                     'http://localhost:5000/'
+                     ])
 except KeyboardInterrupt:
     print("BrewDaemon is shutting down ...")
 finally:
