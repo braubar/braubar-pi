@@ -4,7 +4,7 @@ import datetime
 
 from flask import Flask, jsonify, render_template
 from service.chartService import ChartService
-import service.brewconfig
+import service.brewconfig as config
 
 __author__ = 'oli@fesseler.info'
 __version__ = ('0', '0', '1')
@@ -41,7 +41,7 @@ def system_state():
 def next():
     asd = None
     try:
-        os.system("echo 'True' > " + brewconfig.NEXT_STATE_FILE)
+        os.system("echo 'True' > " + config.NEXT_STATE_FILE)
         asd = {"ok": True, "state": None}
     except:
         print("next failed")
