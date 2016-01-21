@@ -68,10 +68,10 @@ button.footer-values  {
     padding: 7px 10px 8px 10px;
 }
 
-.row .header {
+.row.header {
     background-color: #ffb64d;
 }
 
-.row .footer {
+.row.footer {
     background-color: #bbb64d;
 }
