@@ -14,7 +14,7 @@ function InitChart(data) {
 
     var vis = d3.select("#mychart"),
         WIDTH = 690,
-        HEIGHT = 300,
+        HEIGHT = 280,
         MARGINS = {
             top: 20,
             right: 20,

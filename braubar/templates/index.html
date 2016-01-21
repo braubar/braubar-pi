@@ -65,37 +65,24 @@
 
 <div class="starter-template">
     <div class="chart-responsive">
-        <svg id="mychart" height="300" width="690"></svg>
+        <svg id="mychart" height="280" width="690"></svg>
     </div><!-- /.chart-responsive-->
 </div><!-- /.starter-template-->
 
     <div class="row footer">
-        <button id class="footer-values col-sm-1 refresh" onclick="refresh()">
-            <span class="glyphicon glyphicon-refresh"></span>
-        </button>
         <div class="footer-values col-sm-2">
-            <div class="footer-labels" id="">Temp current:</div>
-            <div class="footer-values" id="">{{brew_state.current_temp}}</div>
+            <div class="footer-labels" id="">Timer:</div>
+            <div class="footer-values" id="">{{brew_state.timer_passed}}</div>
         </div>
+        {%  for name in brew_recipe %}
         <div class="footer-values col-sm-2">
-            <div class="footer-labels" id="">Temp target:</div>
-            <div class="footer-values" id="">{{brew_state.target_temp}}</div>
+            <div class="footer-labels" id="">{{  brew_recipe[name].name }}</div>
+            <div class="footer-values" id="">{{ brew_recipe[name].temp }}</div>
+            {%  if brew_recipe[name].auto %}
+                <div class="footer-values" id="">{{ brew_recipe[name].time }}</div>
+            {% endif %}
         </div>
-        <div class="footer-values col-sm-2">
-            <div class="footer-labels" id="">Time exceded:</div>
-            <div class="footer-values" id="">{{brew_state.duration}}</div>
-        </div>
-        <div class="footer-values col-sm-2">
-            <div class="footer-labels" id="">State</div>
-            <div class="footer-values" id="">{{brew_state.current_state}}</div>
-        </div>
-        <div class="footer-values col-sm-2">
-            <div class="footer-labels" id="">Temp Increase</div>
-            <div class="footer-values" id="">{{brew_state.temp_increase}}</div>
-        </div>
-        <button id="" class="footer-values col-sm-1 next" onclick="next()">
-            <span class="glyphicon glyphicon-play"></span>
-        </button>
+        {%  endfor %}
     </div>
 </div>
 

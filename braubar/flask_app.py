@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
+import json
 import logging
 import os
-import datetime
 
 from flask import Flask, jsonify, render_template
 from service.chartService import ChartService
@@ -12,15 +12,23 @@ import time
 logfile = config.BrewConfig.LOG_BASE + time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime()) + ".log"
 logging.basicConfig(filename=logfile, level=logging.WARN, format='{%(asctime)s: %(message)s}')
 
+
 __author__ = 'oli@fesseler.info'
 __version__ = ('0', '0', '1')
 
 app = Flask(__name__)
+app.config["JSON_SORT_KEY"] = False
 
 
 @app.route("/")
 def index():
-    return render_template('index.html', brew_id=brew_id, brew_state=ChartService().status(brew_id))
+    recipe_file = open(config.BrewConfig().RECIPE_FILE)
+    recipe = json.load(recipe_file)
+    return render_template('index.html',
+                           brew_id=brew_id,
+                           brew_state=ChartService().status(brew_id),
+                           brew_recipe=recipe)
+
 
 
 @app.route('/start')
@@ -47,11 +55,11 @@ def system_state():
 def next():
     asd = None
     try:
-        os.system("echo 'True' > " + config.NEXT_STATE_FILE)
-        asd = {"ok": True, "state": None}
+        os.system("echo 'True' > " + config.BrewConfig.NEXT_STATE_FILE)
+        asd = {"ok": True, "status": ChartService().status(brew_id)}
     except:
         print("next failed")
-        asd = {"ok": False, "state": None}
+        asd = {"ok": False, "status": ChartService().status(brew_id)}
     finally:
         return jsonify(asd)
 

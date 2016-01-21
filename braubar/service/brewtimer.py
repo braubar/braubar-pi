@@ -22,7 +22,9 @@ class BrewTimer:
         return self.timer.is_alive()
 
     def passed(self):
-        return (datetime.now() - self.start_time).total_seconds()
+        if self.start_time:
+            return (datetime.now() - self.start_time).total_seconds()
+        return 0
 
     def remaining(self):
         return self.duration - self.passed()

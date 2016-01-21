@@ -32,7 +32,8 @@ class ChartService:
             "change": data[3],
             "sensor_id": data[4],
             "current_state": data[5],
-            "brew_id": data[6]
+            "brew_id": data[6],
+            "timer_passed": data[7]
         }
 
     def brew_chart(self, brew_id=None):
@@ -94,7 +95,6 @@ class ChartService:
         duration = (brew_time - brew_start)
         status["duration"] = str(duration).split(".")[0]
         status["temp_increase"] = self.temp_increase(brew_id)
-        status["time_passed"] = ""
         return status
 
 

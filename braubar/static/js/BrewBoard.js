@@ -11,8 +11,9 @@ function next() {
 
 function refresh() {
     console.log("refresh pushed")
-    $.getJSON('/chart/data', function (data) {
-    });
-    $.getJSON('/status', function (data) {
-    });
+    //$.getJSON('/chart/data', function (data) {
+    //});
+    //$.getJSON('/status', function (data) {
+    //});
+    location.reload(true);
 };

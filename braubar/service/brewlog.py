@@ -15,19 +15,20 @@ class BrewLog:
         self.conn = sqlite3.connect('brew.db')
         self.db = self.conn.cursor()
 
-    def log(self, current_temp, target_temp, change, sensor_id, current_state, brew_id):
+    def log(self, current_temp, target_temp, change, sensor_id, current_state, brew_id, timer_passed=0):
         brew_time = datetime.now().isoformat()
         try:
             self.db.execute(
                     '''INSERT INTO brewlog
-                        VALUES (?,?,?,?,?,?,?)
+                        VALUES (?,?,?,?,?,?,?,?)
                         ''', (brew_time,
                               current_temp,
                               target_temp,
                               change,
                               sensor_id,
                               current_state,
-                              brew_id))
+                              brew_id,
+                              timer_passed))
             self.conn.commit()
 
         except sqlite3.Error as e:
@@ -66,7 +67,8 @@ class BrewLog:
                     change FLOAT,
                     sensor_id INT,
                     current_state TEXT,
-                    brew_id INT
+                    brew_id INT,
+                    timer_passed INT
                 )
             ''')
         except sqlite3.Error as e:
