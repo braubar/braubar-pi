@@ -1,10 +1,16 @@
 # -*- coding: utf-8 -*-
+import logging
 import os
 import datetime
 
 from flask import Flask, jsonify, render_template
 from service.chartService import ChartService
 import service.brewconfig as config
+import time
+
+
+logfile = config.BrewConfig.LOG_BASE + time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime()) + ".log"
+logging.basicConfig(filename=logfile, level=logging.WARN, format='{%(asctime)s: %(message)s}')
 
 __author__ = 'oli@fesseler.info'
 __version__ = ('0', '0', '1')

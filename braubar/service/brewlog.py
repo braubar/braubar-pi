@@ -1,6 +1,12 @@
+import logging
 from datetime import datetime
 import sqlite3
+import time
+from service.brewconfig import BrewConfig
 
+
+logfile = BrewConfig.LOG_BASE + time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime()) + ".log"
+logging.basicConfig(filename=logfile, level=logging.WARN, format='{%(asctime)s: %(message)s}')
 
 class BrewLog:
     db = None
@@ -28,6 +34,9 @@ class BrewLog:
             if e.args[0] == 'no such table: brewlog':
                 self.create_table()
                 print("checking DB and create table...")
+            else:
+                logging.error(e)
+                print("big error", e)
 
     def readAll(self):
         self.db.execute('''

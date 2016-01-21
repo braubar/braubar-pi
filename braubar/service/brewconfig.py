@@ -9,6 +9,8 @@ NEXT_STATE_FILE = "../data/next_state.brew"
 class BrewConfig:
     config = None
 
+    LOG_BASE = "../log/brewlog_"
+
     def __init__(self):
         self.read_config()
 
