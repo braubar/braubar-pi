@@ -11,16 +11,22 @@ class SimpleState:
     ALPHA = "alpha"
     LEUTERN = "laeutern"
     KOCHEN = "kochen"
+    VORKOCHEN = "vorkochen"
     ENDE = "ende"
+    PAUSE = "pause"
     recipe = None
     state_list = []
 
     def __init__(self):
-        self.state_list = [(self.maischen, SimpleState.MAISCHEN),
+        self.state_list = [(self.pause, SimpleState.PAUSE),
+                           (self.maischen, SimpleState.MAISCHEN),
                            (self.beta, SimpleState.BETA),
                            (self.alpha, SimpleState.ALPHA),
                            (self.laeutern, SimpleState.LEUTERN),
+                           (self.pause, SimpleState.PAUSE),
+                           (self.vorkochen, SimpleState.VORKOCHEN),
                            (self.kochen, SimpleState.KOCHEN),
+                           (self.pause, SimpleState.PAUSE),
                            (self.end, SimpleState.ENDE)]
         self.state_list.reverse()
         self.recipe = json.load(open(RECIPE_FILE, 'r'))
@@ -59,10 +65,20 @@ class SimpleState:
         print('kochen got', x)
         return self.recipe[self.state]
 
+    def vorkochen(self, x):
+        self.state = self.VORKOCHEN
+        print('vorkochen got', x)
+        return self.recipe[self.state]
+
     def end(self, x):
         self.state = self.ENDE
         print("this is the end, my friend")
         exit(0)
+
+    def pause(self, x):
+        self.state = self.PAUSE
+        print("pause")
+        return self.recipe[self.state]
 
     def next(self):
         method, state_name = self.state_list.pop()
