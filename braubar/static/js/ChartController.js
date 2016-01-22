@@ -1,4 +1,7 @@
 $(document).ready(function () {
+    setInterval(function() {
+        location.reload(true);
+    }, 5000);
     $.getJSON('/chart/data', function (data) {
         InitChart(data);
     });
