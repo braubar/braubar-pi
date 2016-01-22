@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Braubar
+Comment=Python enabled brewautomation
+Keywords=brew;python;arduino;flask;
+TryExec=/home/pi/braubar-pi/bin/braubar
+Exec=/home/pi/braubar-pi/bin/braubar
+StartupNotify=true
+Terminal=true
+Type=Application
+Categories=Education;

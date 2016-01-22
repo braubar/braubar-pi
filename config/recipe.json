@@ -1,31 +1,43 @@
 {
   "maischen": {
-    "name": "Maischen",
-    "temp": 40.0,
+    "name": "Einmaischen",
+    "temp": 45.0,
     "time": 0,
     "auto": false
   },
   "beta": {
     "name": "beta-Amylase",
-    "temp": 50.0,
-    "time": 600,
+    "temp": 61.0,
+    "time": 2700,
     "auto": true
   },
   "alpha": {
     "name": "alpha-Amylase",
-    "temp": 60.0,
-    "time": 600,
+    "temp": 71.0,
+    "time": 1800,
     "auto": true
   },
   "laeutern": {
     "name": "Laeutern",
-    "temp": 70.0,
+    "temp": 78.0,
     "time": 0,
     "auto": false
   },
   "kochen": {
     "name": "Kochen",
-    "temp": 80.0,
+    "temp": 100.0,
+    "time": 5400,
+    "auto": true
+  },
+  "vorkochen": {
+    "name": "Vorkochen",
+    "temp": 90.0,
+    "time": 0,
+    "auto": false
+  },
+  "pause": {
+    "name": "Pause",
+    "temp": 0.0,
     "time": 0,
     "auto": false
   }

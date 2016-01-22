@@ -133,9 +133,11 @@ class BrewDaemon:
         if pid_output > 0 and status.get(PowerStrip.PLUG_1) == PowerStrip.OFF:
             print("powerstrip on ", pid_output)
             PowerStrip().switch(PowerStrip.PLUG_1, PowerStrip.ON)
+            PowerStrip().switch(PowerStrip.PLUG_2, PowerStrip.ON)
         if pid_output < 0 and status.get(PowerStrip.PLUG_1) == PowerStrip.ON:
             print("powerstrip on ", pid_output)
             PowerStrip().switch(PowerStrip.PLUG_1, PowerStrip.OFF)
+            PowerStrip().switch(PowerStrip.PLUG_2, PowerStrip.OFF)
 
     def start_flask(self, host=HOST_IP, brew_id=None):
         args = ["python3", FLASK_FILE, "--host", host]
