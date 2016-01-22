@@ -1,6 +1,6 @@
 import time
 
-from helper.powerstrip import PowerStrip
+from braubar.service.powerstrip import PowerStrip
 
 s = PowerStrip()
 
