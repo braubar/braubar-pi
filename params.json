@@ -1,7 +1,1 @@
-{
-  "name": "Braubar-pi",
-  "tagline": "BrauBar shall be a control for a microbrewery. The idea comes from the current trend that taverns and pubs brew their own handcrafted beer. The idea of Braubar is to partially automate this process with consumer hardware. The costs shall be low and it should be easy to recreate the Braubar.",
-  "body": "### This is BrauBar.\r\n ",
-  "google": "brewing, automation, raspberry pi, arduino, python, embedded",
-  "note": "Don't delete this file! It's used internally to help with page regeneration."
-}
+{"name":"Braubar-pi","tagline":"BrauBar shall be a control for a microbrewery. The idea comes from the current trend that taverns and pubs brew their own handcrafted beer. The idea of Braubar is to partially automate this process with consumer hardware. The costs shall be low and it should be easy to recreate the Braubar.","body":"### This is BrauBar.\r\n ","google":"brewing, automation, raspberry pi, arduino, python, embedded","note":"Don't delete this file! It's used internally to help with page regeneration."}
