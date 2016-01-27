@@ -20,7 +20,7 @@ class PowerStrip:
         PLUG_4: 0
     }
 
-    def __init__(self, url='http://192.168.2.36/', password='braubar'):
+    def __init__(self, url='http://192.168.3.100/', password='braubar'):
         self.url = url
         self.password = password
         self.status = self.login(password)
