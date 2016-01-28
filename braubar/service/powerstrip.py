@@ -51,6 +51,7 @@ class PowerStrip:
             r = requests.post(url, data=values, timeout=2)
         except requests.Timeout:
             print("powerplug timeout")
+            exit(1)
         return self.parse_response(r.text)
 
     def parse_response(self, response_data):

@@ -7,7 +7,7 @@
  },
  "powerstrip": {
   "url": "http://192.168.3.100/",
-  "password": "braubar"
+  "password": "braubar",
   "mac": "88:b6:27:01:1a:e4"
  },
  "braubar": {
