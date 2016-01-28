@@ -22,14 +22,11 @@ WAIT_THREAD_TIMEOUT = 0.05
 WAIT_THREAD_NAME = "Thread_wait_temp"
 HOST_IP = '0.0.0.0'
 SENSOR_PORT = 50505
-TEMP_TOLERANCE = 0.0
-NEXT_STATE_FILE = "../data/next_state.brew"
-LOG_BASE = "../log/brewlog_"
-TEMP_RAW_FILE = "../data/temp.brew"
+TEMP_TOLERANCE = 0.5
 FLASK_FILE = "../braubar/flask_app.py"
 SENSOR_SERVER_FILE = "../braubar/service/sensorserver.py"
 
-logfile = LOG_BASE + time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime()) + ".log"
+logfile = BrewConfig.LOG_BASE + time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime()) + ".log"
 logging.basicConfig(filename=logfile, level=logging.WARN, format='{%(asctime)s: %(message)s}')
 log = BrewLog()
 
@@ -61,7 +58,7 @@ class BrewDaemon:
         self.pid.set(self.state_params["temp"])
 
         while True:
-            temp_raw = subprocess.check_output(["tail", "-1", TEMP_RAW_FILE], universal_newlines=True)
+            temp_raw = subprocess.check_output(["tail", "-1", BrewConfig.TEMP_RAW_FILE], universal_newlines=True)
 
             temp_current, last_value, sensor_id = self.convert_temp(temp_raw, last_value)
 
@@ -114,10 +111,10 @@ class BrewDaemon:
     def check_for_next(self):
         n = False
         try:
-            next_raw = subprocess.check_output(["tail", "-1", NEXT_STATE_FILE], universal_newlines=True)
+            next_raw = subprocess.check_output(["tail", "-1", BrewConfig.NEXT_STATE_FILE], universal_newlines=True)
             n = next_raw.strip() == "True"
             if n:
-                os.system("echo '' > " + NEXT_STATE_FILE)
+                os.system("echo '' > " + BrewConfig.NEXT_STATE_FILE)
         finally:
             pass
         return n
@@ -151,9 +148,9 @@ class BrewDaemon:
         subprocess.Popen(args)
 
     def assureComFileExists(self):
-        f = open(NEXT_STATE_FILE, 'w')
+        f = open(BrewConfig.NEXT_STATE_FILE, 'w')
         f.close()
-        f = open(TEMP_RAW_FILE, 'w')
+        f = open(BrewConfig.TEMP_RAW_FILE, 'w')
         f.close()
 
     def shutdown(self):
