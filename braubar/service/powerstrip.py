@@ -1,6 +1,12 @@
 import requests
+import logging
+
+import time
+from service.brewconfig import BrewConfig
 from bs4 import BeautifulSoup
 
+logfile = BrewConfig.LOG_BASE + time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime()) + ".log"
+logging.basicConfig(filename=logfile, level=logging.WARN, format='{%(asctime)s: %(message)s}')
 
 class PowerStrip:
     url = None
@@ -41,7 +47,10 @@ class PowerStrip:
 
     def request(self, referrer='', values=''):
         url = self.url + referrer
-        r = requests.post(url, data=values)
+        try:
+            r = requests.post(url, data=values, timeout=2)
+        except requests.Timeout:
+            print("powerplug timeout")
         return self.parse_response(r.text)
 
     def parse_response(self, response_data):

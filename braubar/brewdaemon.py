@@ -49,7 +49,7 @@ class BrewDaemon:
         self.pid = Pid(P, I, D)
         self.pid.range(MIN, MAX)
         self.pid.set(0.0)
-        self.powerstrip = PowerStrip(self.config.get("powerstrip")["url"])
+        self.powerstrip = PowerStrip(self.config.get("powerstrip")["url"], self.config.get("powerstrip")["password"])
         self.powerstrip.all_off()
         self.simplestate = SimpleState()
         self.brew_id = int(round(time.time() * 1000))
@@ -132,12 +132,12 @@ class BrewDaemon:
         status = self.powerstrip.fetch_status()
         if pid_output > 0 and status.get(PowerStrip.PLUG_1) == PowerStrip.OFF:
             print("powerstrip on ", pid_output)
-            PowerStrip().switch(PowerStrip.PLUG_1, PowerStrip.ON)
-            PowerStrip().switch(PowerStrip.PLUG_2, PowerStrip.ON)
+            self.powerstrip.switch(PowerStrip.PLUG_1, PowerStrip.ON)
+            self.powerstrip.switch(PowerStrip.PLUG_2, PowerStrip.ON)
         if pid_output < 0 and status.get(PowerStrip.PLUG_1) == PowerStrip.ON:
             print("powerstrip on ", pid_output)
-            PowerStrip().switch(PowerStrip.PLUG_1, PowerStrip.OFF)
-            PowerStrip().switch(PowerStrip.PLUG_2, PowerStrip.OFF)
+            self.powerstrip.switch(PowerStrip.PLUG_1, PowerStrip.OFF)
+            self.powerstrip.switch(PowerStrip.PLUG_2, PowerStrip.OFF)
 
     def start_flask(self, host=HOST_IP, brew_id=None):
         args = ["python3", FLASK_FILE, "--host", host]
