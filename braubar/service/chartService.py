@@ -36,6 +36,36 @@ class ChartService:
             "timer_passed": data[7]
         }
 
+    def last_row2(self, brew_id=None):
+        conn = sqlite3.connect('brew.db')
+        db = conn.cursor()
+        stmt_args = []
+        if brew_id:
+            stmt = '''select * from brewlog
+            where brew_id = ?
+            ORDER BY brew_time DESC
+            LIMIT 1;'''
+            stmt_args.append(brew_id)
+        else:
+            stmt = '''select * from brewlog
+            ORDER BY brew_time DESC
+            LIMIT 1;'''
+
+        db.execute(stmt, stmt_args)
+        data = db.fetchall()[0]
+        conn.close()
+        temp = data[1]
+        change = data[3]
+        return {
+            "date": data[0],
+            "current": temp,
+            "target": data[2],
+            "change": change / 1000 / 2 + 50,
+            "sensor": data[4],
+            "state": data[5],
+            "brew_id": data[6]
+        }
+
     def brew_chart(self, brew_id=None):
         conn = sqlite3.connect('brew.db')
         db = conn.cursor()
@@ -81,7 +111,7 @@ class ChartService:
         return json.dumps(result)
 
     def brew_status(self, brew_id):
-        last_row = ChartService.last_row(brew_id=brew_id)
+        last_row = self.last_row(brew_id=brew_id)
         # return json.dumps({"status": 501})
         return json.dumps(last_row)
 
@@ -109,15 +139,17 @@ class ChartService:
         stmt_args.append(brew_id)
 
         data = self.select(stmt, stmt_args)
+        if len(data) == 0:
+            return 0.0
         a, b = self.lin_reg(data)
         # y = b*x + a
         y_before = b * data[0][2] + a
         y_now = b * data[-1][2] + a
-        # TODO vor einer minute wir ein großer negativer wert angezeigt.
+        # TODO berechnung scheint nicht zu stimmen...
         return round(y_now - y_before, 2)
 
     def select(self, stmt, stmt_args):
-        conn = sqlite3.connect('../bin/brew.db')
+        conn = sqlite3.connect('brew.db')
         db = conn.cursor()
         db.execute(stmt, stmt_args)
         data = db.fetchall()

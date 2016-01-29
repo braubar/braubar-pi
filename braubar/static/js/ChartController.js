@@ -1,7 +1,16 @@
 $(document).ready(function () {
-    setInterval(function() {
-        location.reload(true);
-    }, 5000);
+    //setInterval(function() {
+    //    location.reload(true);
+    //}, 5000);
+    //var socket = io.connect('http://localhost:5000');
+    var socket = io.connect('http://' + document.domain + ':' + location.port);
+    socket.on('connect', function() {
+        socket.emit('my event', {data: 'I\'m connected!'});
+        console.log("moin moin")
+    });
+    socket.on('fullchart', function(data) {
+        InitChart(JSON.parse(data));
+    });
     $.getJSON('/chart/data', function (data) {
         InitChart(data);
     });

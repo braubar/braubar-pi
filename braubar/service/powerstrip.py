@@ -48,7 +48,7 @@ class PowerStrip:
     def request(self, referrer='', values=''):
         url = self.url + referrer
         try:
-            r = requests.post(url, data=values, timeout=2)
+            r = requests.post(url, data=values)
         except requests.Timeout:
             print("powerplug timeout")
             exit(1)
