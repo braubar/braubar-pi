@@ -127,12 +127,18 @@ class BrewDaemon:
         :return:
         """
         status = self.powerstrip.fetch_status()
-        if pid_output > 0 and status.get(PowerStrip.PLUG_1) == PowerStrip.OFF and temp_target <= temp_current:
-            print("powerstrip on ", pid_output)
-            self.powerstrip.switch(PowerStrip.PLUG_1, PowerStrip.ON)
-        if pid_output < 0 and status.get(PowerStrip.PLUG_1) == PowerStrip.ON:
-            print("powerstrip on ", pid_output)
-            self.powerstrip.switch(PowerStrip.PLUG_1, PowerStrip.OFF)
+
+        if temp_target == 100.0:
+            """ ignore PID output while cooking """
+            if status.get(PowerStrip.PLUG_1) == PowerStrip.OFF:
+                self.powerstrip.switch(PowerStrip.PLUG_1, PowerStrip.ON)
+        else:
+            if pid_output > 0 and status.get(PowerStrip.PLUG_1) == PowerStrip.OFF and temp_target <= temp_current:
+                print("powerstrip on ", pid_output)
+                self.powerstrip.switch(PowerStrip.PLUG_1, PowerStrip.ON)
+            if pid_output < 0 and status.get(PowerStrip.PLUG_1) == PowerStrip.ON:
+                print("powerstrip on ", pid_output)
+                self.powerstrip.switch(PowerStrip.PLUG_1, PowerStrip.OFF)
 
     def start_flask(self, host=HOST_IP, brew_id=None):
         args = ["python3", FLASK_FILE, "--host", host]
