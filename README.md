@@ -7,29 +7,13 @@ Hey there, this is Braubar!
 - python3
 - pip
 - flask (via pip) -> http://flask.pocoo.org/docs/0.10/quickstart/
-- git 
+- git
 
+## Config
+To use braubar correctly link dnsmasq.conf and interfaces in config folder to appropiate folders on target system.
+Raspberry Pi with Debian example:
 
-## Testserver
+dnsmasq.conf: `/etc/dnsmasq.conf`
+interfaces: `/etc/network/interfaces`
 
-Als Test wird ein Flask-Webserver gestartet der über braupi:5000 erreichbar ist. 
-Flask muss mit pip auf dem Zielhost installiert sein
-
-
-
-## Deployment
-
-Aktuell läuft das Deployment über einen git `post-receive` hook.
-                                                                                               
-    #!/bin/sh 
-    
-    DEPLOYDIR=~/apps/braubar
-    GIT_WORK_TREE="$DEPLOYDIR" git checkout -f
-    cd "$DEPLOYDIR" 
-    
-    # Do some python magic!
-    
-    source $DEPLOYDIR/deployment/deplo.sh
-    echo "Alimost everything done, except installing python for the hook! ;)"
-
-Der wiederum ein Skript (deploy.sh) aus dem deployment Verzeichnis aufruft.
+after enable dnsmasq as a daemon to provide IPs for all connected devices in the network.
