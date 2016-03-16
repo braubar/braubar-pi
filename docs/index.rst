@@ -11,6 +11,9 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   raspberry
+   Brauen
+   install
 
 
 Indices and tables
@@ -19,6 +22,7 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
 
 
 Features
@@ -35,6 +39,7 @@ Installation
 
 Note: BrewBar needs a bunch of hardware to run porperly.
 Here is the list of my hardware:
+
  - Arduino Uno with Ethernet Shield 2 + PoE Module
  - Raspberry Pi 2 with 7" Touch Display
  - Temperature sensor ds18b20
@@ -47,6 +52,7 @@ Requirements
 
 As easy as it can be: 
 Clone these two Repositories at GitHub 
+
  - https://github.com/ofesseler/braubar-pi.git
  - https://github.com/ofesseler/braubar-temp.git
 
