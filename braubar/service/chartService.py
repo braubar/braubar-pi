@@ -117,7 +117,7 @@ class ChartService:
         return round(y_now - y_before, 2)
 
     def select(self, stmt, stmt_args):
-        conn = sqlite3.connect('../bin/brew.db')
+        conn = sqlite3.connect('brew.db')
         db = conn.cursor()
         db.execute(stmt, stmt_args)
         data = db.fetchall()
