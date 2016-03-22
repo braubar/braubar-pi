@@ -87,7 +87,7 @@ class BrewDaemon:
 
             time.sleep(2)
             last_value = float(temp_current)
-            if not self.state_params["auto"] == 1:
+            if not self.state_params["auto"] == True:
                 if self.check_for_next():
                     self.next_state()
             elif self.state_params["temp"] - TEMP_TOLERANCE <= temp_current: # <= self.state_params["temp"] + TEMP_TOLERANCE:
@@ -116,6 +116,7 @@ class BrewDaemon:
         try:
             next_raw = subprocess.check_output(["tail", "-1", NEXT_STATE_FILE], universal_newlines=True)
             n = next_raw.strip() == "True"
+            print("FILE CHECK", next_raw.strip(), n)
             if n:
                 os.system("echo '' > " + NEXT_STATE_FILE)
         finally:
