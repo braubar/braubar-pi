@@ -130,8 +130,11 @@ class ChartService:
         for row in data:
             x_sum += self.get_duration_timestamp(row[0], row[1])
             y_sum += row[2]
-        x_strich = x_sum / len(data)
-        y_strich = y_sum / len(data)
+        l=len(data)
+        if l==0:
+            l=1
+        x_strich = x_sum / l
+        y_strich = y_sum / l
 
         sum_delta = 0.0
         sum_x_delta_pow = 0.0
