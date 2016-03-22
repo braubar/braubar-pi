@@ -29,33 +29,8 @@ Features
 --------
 
  - controls temperature with a network-enabled Arduino. 
- - is awesome
+ - uses a PID-Controller
  - helps to simplify your brewing process
+ - displays temperature graph
 
-We like to brew! 
-
-Installation
-============
-
-Note: BrewBar needs a bunch of hardware to run porperly.
-Here is the list of my hardware:
-
- - Arduino Uno with Ethernet Shield 2 + PoE Module
- - Raspberry Pi 2 with 7" Touch Display
- - Temperature sensor ds18b20
- - PoE enabled Switch
- - ethernet wires
- - LAN enabled power-switch EG-PM2-LAN
-
-Requirements
-------------
-
-As easy as it can be: 
-Clone these two Repositories at GitHub 
-
- - https://github.com/ofesseler/braubar-pi.git
- - https://github.com/ofesseler/braubar-temp.git
-
-then upload the code to your Arduino Uno with Ethernet-Shield on top and a ds18b20 sensor.
-
-
+We like to brew!
