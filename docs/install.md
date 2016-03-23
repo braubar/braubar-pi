@@ -14,6 +14,16 @@ Here is the list of my hardware:
 
 ## Software Requirements
 
+- supervisor
+- python3
+- pip
+
+Debian 8:
+
+```bash
+apt-get install supervisor python3 python3-pip
+```
+
 As easy as it can be: 
 Clone these two Repositories
 
@@ -22,10 +32,16 @@ Clone these two Repositories
 
 then upload the code of Repository `braubar-temp` to your Arduino Uno with Ethernet-Shield on top and a ds18b20 sensor.
 
+to install the needed python requirements run `pip3 -r requirements.txt`
+
 
 ## Supervisord
 
-Create config in /etc/supervisor.d/braubar.ini
+Adjust paths to your configuration!
+
+Create link to config in /etc/supervisor/conf.d/braubar.conf
+
+`ln -s $BRAUBAR_HOME/config/braubar.conf /etc/supervisor/conf.d/braubar.conf`
 
 ```ini
 [program:braubar]
@@ -51,3 +67,9 @@ stderr_events_enabled=false
 environment=A="1",B="2"
 serverurl=AUTO
 ```
+
+reread and restart supervisr and show status
+`supervisorctl reread && supervisorctl reload && supervisorctl status`
+
+control log in `/var/log/supervisor/supervisor.log`
+
