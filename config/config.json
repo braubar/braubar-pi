@@ -6,7 +6,7 @@
   "baz": "FOO"
  },
  "powerstrip": {
-  "url": "http://192.168.3.43/",
+  "url": "http://192.168.3.101/",
   "password": "braubar"
  },
  "braubar": {
