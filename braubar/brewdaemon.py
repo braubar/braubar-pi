@@ -30,7 +30,6 @@ FLASK_FILE = "../braubar/flask_app.py"
 SENSOR_SERVER_FILE = "../braubar/service/sensorserver.py"
 
 logfile = LOG_BASE + time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime()) + ".log"
-logging.basicConfig(filename=logfile, level=logging.WARN, format='{%(asctime)s: %(message)s}')
 log = BrewLog()
 
 
