@@ -108,12 +108,14 @@ class ChartService:
                 '''
         stmt_args.append(brew_id)
 
-        data = self.select(stmt, stmt_args)
-        a, b = self.lin_reg(data)
-        # y = b*x + a
-        y_before = b * data[0][2] + a
-        y_now = b * data[-1][2] + a
-        # TODO vor einer minute wir ein großer negativer wert angezeigt.
+        if len(data) > 0:
+            a, b = self.lin_reg(data)
+            # y = b*x + a
+            y_before = b * data[0][2] + a
+            y_now = b * data[-1][2] + a
+            # TODO vor einer minute wir ein großer negativer wert angezeigt.
+        else:
+            return 0.0
         return round(y_now - y_before, 2)
 
     def select(self, stmt, stmt_args):
@@ -142,8 +144,11 @@ class ChartService:
             sum_x_delta = (self.get_duration_timestamp(row[0], row[1]) - x_strich)
             sum_delta += sum_x_delta * (row[2] - y_strich)
             sum_x_delta_pow += math.pow(sum_x_delta, 2)
-        b_xy = sum_delta / sum_x_delta_pow
-        a_xy = y_strich - b_xy * x_strich
+        if sum_x_delta_pow != 0.0:
+            b_xy = sum_delta / sum_x_delta_pow
+            a_xy = y_strich - b_xy * x_strich
+        else:
+            return 0.0, 0.0
         return a_xy, b_xy
 
     def get_duration_datetime_str(self, start_time, timestamp):
