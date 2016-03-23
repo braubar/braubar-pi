@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-
+from service.brewconfig import BrewConfig
 
 class PowerStrip:
     url = None
@@ -20,8 +20,11 @@ class PowerStrip:
         PLUG_4: 0
     }
 
-    def __init__(self, url='http://192.168.3.43/', password='braubar'):
-        self.url = url
+    def __init__(self, url=None, password='braubar'):
+        if url:
+            self.url = url
+        else:
+            self.url = BrewConfig().get('powerstrip')['url']
         self.password = password
         self.status = self.login(password)
 
