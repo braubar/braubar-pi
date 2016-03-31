@@ -107,6 +107,7 @@ class ChartService:
                     order by brew_time asc;
                 '''
         stmt_args.append(brew_id)
+        data = self.select(stmt, stmt_args)
 
         if len(data) > 0:
             a, b = self.lin_reg(data)
