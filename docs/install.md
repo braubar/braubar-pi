@@ -1,18 +1,8 @@
 # Installation
 
-## Hardware Requirements
+This installation guide will lead you through the whole process of installation and starting p your personal Braubar.
 
-Note: BrewBar needs a bunch of hardware to run porperly.
-Here is the list of my hardware:
-
- - Arduino Uno with Ethernet Shield 2 + PoE Module
- - Raspberry Pi 2 with 7" Touch Display
- - Temperature sensor ds18b20
- - PoE enabled Switch
- - ethernet wires
- - LAN enabled power-switch EG-PM2-LAN
-
-## Software Requirements
+## Debian and Packages
 
 - supervisor
 - python3
@@ -35,8 +25,7 @@ then upload the code of Repository `braubar-temp` to your Arduino Uno with Ether
 to install the needed python requirements run `pip3 -r requirements.txt`
 
 copy iceweasel desktop-entry to `.config/autostart` and change `Exec=iceweasel u%` to `Exec=iceweasel http://localhost:5000`
-then iceweasel will start everytime you start your raspberry. 56
-
+then iceweasel will start everytime you start your raspberry.
 
 ## Supervisord
 
