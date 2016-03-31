@@ -72,4 +72,5 @@ class PowerStrip:
         self.switch(PowerStrip.PLUG_1, PowerStrip.OFF)
         self.switch(PowerStrip.PLUG_2, PowerStrip.OFF)
         self.switch(PowerStrip.PLUG_3, PowerStrip.OFF)
-        self.switch(PowerStrip.PLUG_4, PowerStrip.OFF)
+        # switched on permanently
+        self.switch(PowerStrip.PLUG_4, PowerStrip.ON)
