@@ -36,3 +36,10 @@ Features
  - displays temperature graph
 
 We like to brew!
+
+Links
+-----
+
+- https://github.com/ofesseler/braubar-pi/zipball/master
+- https://github.com/ofesseler/braubar-pi/tarball/master
+- https://github.com/ofesseler/braubar-pi
