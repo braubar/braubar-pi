@@ -44,7 +44,12 @@ class PowerStrip:
 
     def request(self, referrer='', values=''):
         url = self.url + referrer
-        r = requests.post(url, data=values, timeout=10.0)
+        try:
+            r = requests.post(url, data=values, timeout=10.0)
+        except RuntimeError:
+            print("not able to reach powerstrip")
+
+
         return self.parse_response(r.text)
 
     def parse_response(self, response_data):
