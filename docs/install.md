@@ -1,14 +1,26 @@
 # Installation
 
-This installation guide will lead you through the whole process of installation and starting p your personal Braubar.
+This installation guide will lead you through the whole process of installation and starting up your personal Braubar.
 
-## Debian and Packages
+At first we begin with the installation of the Raspberry Pi and related software.
+
+## Raspberry Pi 
+
+A common and small distribution is the raspbian image. Download it and copy it to your sd card. For the copy enshure that the device is not mounted. You need to be root.
+
+```
+dd bs=4M if=/tmp/2016-03-18-raspbian-jessie-lie.img of=/dev/mmcblk0
+```
+You can find the appropriate image on <https://www.raspberrypi.org/downloads/>
+
+### Debian and Packages
+
 
 - supervisor
 - python3
 - pip
 
-Debian 8:
+Debian 8For the copy enshure that the device is not mounted. You need to be rootFor the copy enshure that the device is not mounted. You need to be root:
 
 ```bash
 apt-get install supervisor python3 python3-pip
