@@ -11,9 +11,11 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
+   install
+   structure
    raspberry
    Brauen
-   install
+
 
 
 Indices and tables
@@ -28,7 +30,7 @@ Indices and tables
 Features
 --------
 
- - controls temperature with a network-enabled Arduino. 
+ - controls temperature with a network-enabled Arduino.
  - uses a PID-Controller
  - helps to simplify your brewing process
  - displays temperature graph

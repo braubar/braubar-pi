@@ -1,6 +1,6 @@
 # Brauen
 
-Der Brauvorgang und dessen aktueller Status wird in einer State-Machine gehalten. Unter Arbeitsschritte werden die einzelnen Schitte aufgezeigt. 
+Der Brauvorgang und dessen aktueller Status wird in einer State-Machine gehalten. Unter Arbeitsschritte werden die einzelnen Schitte aufgezeigt.
 
 ## Arbeitsschritte
 
@@ -27,5 +27,5 @@ Der Brauvorgang und dessen aktueller Status wird in einer State-Machine gehalten
 Siehe Brauprotokoll und Zeitleiste
 
 
-## PID von 
+## PID von
 https://github.com/ivmech/ivPID

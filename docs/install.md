@@ -24,7 +24,7 @@ Debian 8:
 apt-get install supervisor python3 python3-pip
 ```
 
-As easy as it can be: 
+As easy as it can be:
 Clone these two Repositories
 
  - https://github.com/ofesseler/braubar-pi.git
@@ -33,6 +33,9 @@ Clone these two Repositories
 then upload the code of Repository `braubar-temp` to your Arduino Uno with Ethernet-Shield on top and a ds18b20 sensor.
 
 to install the needed python requirements run `pip3 -r requirements.txt`
+
+copy iceweasel desktop-entry to `.config/autostart` and change `Exec=iceweasel u%` to `Exec=iceweasel http://localhost:5000`
+then iceweasel will start everytime you start your raspberry. 56
 
 
 ## Supervisord
@@ -72,4 +75,3 @@ reread and restart supervisr and show status
 `supervisorctl reread && supervisorctl reload && supervisorctl status`
 
 control log in `/var/log/supervisor/supervisor.log`
-
