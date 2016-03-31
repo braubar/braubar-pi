@@ -2,34 +2,10 @@
 
 Hey there, this is Braubar!
 
-## Requirements
-
-- python3
-- pip
-- flask (via pip) -> http://flask.pocoo.org/docs/0.10/quickstart/
-- git 
+![Braubar Control Screenshot](https://raw.githubusercontent.com/braubar/braubar-pi/master/docs/img/braubar_screenshot.png "Braubar control screenshot")
 
 
-## Testserver
+Braubar shall be a control for a microbrewery. The idea comes from the current trend that taverns and pubs brew their own handcrafted beer. The idea of Braubar is to partially automate this process with consumer hardware. The costs shall be low and it should be easy to recreate the Braubar.
 
-Als Test wird ein Flask-Webserver gestartet der über braupi:5000 erreichbar ist. 
-Flask muss mit pip auf dem Zielhost installiert sein
+For more information and install manuals see: <http://braubar.github.io>
 
-
-
-## Deployment
-
-Aktuell läuft das Deployment über einen git `post-receive` hook.
-                                                                                               
-    #!/bin/sh 
-    
-    DEPLOYDIR=~/apps/braubar
-    GIT_WORK_TREE="$DEPLOYDIR" git checkout -f
-    cd "$DEPLOYDIR" 
-    
-    # Do some python magic!
-    
-    source $DEPLOYDIR/deployment/deplo.sh
-    echo "Alimost everything done, except installing python for the hook! ;)"
-
-Der wiederum ein Skript (deploy.sh) aus dem deployment Verzeichnis aufruft.
