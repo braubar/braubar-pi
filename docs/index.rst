@@ -6,7 +6,7 @@
 Welcome to BrauBar's documentation!
 ===================================
 
-Inspired by the current trend of Craft Beer, Braubar aims to make microbrewed beer accessible for everyone.
+Inspired by the current trend of Craft Beer, Braubar aims to make microbrewed beer accessible to everyone.
 The basic idea of Braubar is to partially automate the process of brewing - with affordable and widely available hardware.
 Aiming for easy adjustability, Braubar relies on open-source and economically efficient technology to recreate - or even enhance - the current microbrewing process.
 
