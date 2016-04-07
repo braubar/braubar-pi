@@ -11,6 +11,7 @@ The basic idea of Braubar is to partially automate the process of brewing - with
 Aiming for easy adjustability, Braubar relies on open-source and economically efficient technology to recreate - or even enhance - the current microbrewing process.
 
 Contents:
+---------
 
 .. toctree::
    :maxdepth: 2
@@ -20,15 +21,6 @@ Contents:
    structure
    raspberry
    Brauen
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
 
 
 
@@ -45,6 +37,6 @@ We like to brew!
 Links
 -----
 
-- https://github.com/ofesseler/braubar-pi/zipball/master
-- https://github.com/ofesseler/braubar-pi/tarball/master
-- https://github.com/ofesseler/braubar-pi
+- https://github.com/braubar/braubar-pi/zipball/master
+- https://github.com/braubar/braubar-pi/tarball/master
+- https://github.com/braubar/braubar-pi
