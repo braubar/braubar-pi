@@ -2,8 +2,6 @@
 
 This installation guide will lead you through the whole process of installation and starting up your personal Braubar.
 
-At first we begin with the installation of the Raspberry Pi and related software.
-
 ## Raspberry Pi 
 
 A common and small distribution is the raspbian image. Download it and copy it to your sd card. For the copy enshure that the device is not mounted. You need to be root.
@@ -167,5 +165,25 @@ reread and restart supervisr and show status
 
 control log in `/var/log/supervisor/supervisor.log`
 
-#arduino
- - https://github.com/ofesseler/braubar-temp.git
+
+## Arduino 
+In Braubar the Arduino acts as a temperature sensor. 
+
+### Geting started
+
+It is required to have an running Arduino environment. Then you can either upload the program to your Arduino within Arduino Studio or with the shipped Makefile, which is recommended. 
+Before running Make you shoud have a look at the Makefile to ensuhre your Serial Port is mapped to the right `/dev`. 
+To upload the compiled program to your Arduino run:
+
+```
+make clean && make && make upload
+```
+
+After running successfully it will request an IP from your DHCP server and start sending broadcast packages all over your local network. To avoid broadcasting, please enter the desired IP for `IPAddress server` in `braubar_temp.ino` file.
+Also it is possible to change the port from 50505 to  your wish. 
+
+### Functionality
+
+It sends a package every second with the current temperature value, the id of the sensor and a start and end sequence consistion of `0xF0FF` and a end sequence with the same sync bits. 
+
+
