@@ -270,7 +270,7 @@ man_pages = [
 ]
 
 # If true, show URL addresses after external links.
-#man_show_urls = False
+man_show_urls = False
 
 
 # -- Options for Texinfo output -------------------------------------------
