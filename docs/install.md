@@ -172,7 +172,7 @@ In Braubar the Arduino acts as a temperature sensor.
 ### Geting started
 
 It is required to have an running Arduino environment. Then you can either upload the program to your Arduino within Arduino Studio or with the shipped Makefile, which is recommended. 
-Before running Make you shoud have a look at the Makefile to ensuhre your Serial Port is mapped to the right `/dev`. 
+Before running Make you shoud have a look at the Makefile to ensuhre your Serial Port is mapped to the right device. 
 To upload the compiled program to your Arduino run:
 
 ```
