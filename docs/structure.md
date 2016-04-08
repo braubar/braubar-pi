@@ -1,6 +1,6 @@
-# Structure
+# Projekt Structure
 
-Generally braubar is divided into three parts: 
+Generally Braubar is divided into three parts: 
 
 - **braubar-pi**: Controling and displaying information on a Raspberry Pi 
 - **braubar-temp**: Temperature sensor that sends temperature values via UDP on Port 50505 
@@ -33,12 +33,19 @@ Also it is possible to go to the next state.
 
 ## braubar-temp
 
+As mentioned before, braubar-temp is a ethernet temperature sensor. The attached sensor is a *ds18b20* sensor for temperature measurement. 
+
+In the current setting the sensor yields a value every 750ms. Therefore it sends at maximum every second a new value, only if the temperature changed. 
+
+The ethernet package looks like the following listing. The start- and end-sync bytes help to ensure that we got a correct package. In the future the end sync should be changed to a CRC to check the payload.
+
 ```
-+-----------+------------+-----------+---------+---------------+
-| sync-bits | temp value | sensor id | heating | end sync bits |
-+-----------+------------+-----------+---------+---------------+
++------------------+------------+-----------+---------+----------------+
+| start-sync-bytes | temp value | sensor id | heating | end sync bytes |
++------------------+------------+-----------+---------+----------------+
 ```
 
+Braubar-temp requieres a DHCP-server to obtain a IP-address. 
 
 ## EG-PM2-LAN
 
