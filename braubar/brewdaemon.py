@@ -16,8 +16,8 @@ from service.brewconfig import BrewConfig
 P = 8000.0
 I = 0.0 # set to zero because cooling is not possible
 D = 350000.0
-MIN = -100000.0
-MAX = 100000.0
+MIN = -5.0
+MAX = 5.0
 WAIT_THREAD_TIMEOUT = 0.05
 WAIT_THREAD_NAME = "Thread_wait_temp"
 HOST_IP = '0.0.0.0'
