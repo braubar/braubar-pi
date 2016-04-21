@@ -19,8 +19,6 @@ Contents:
    Hardware
    install
    structure
-   raspberry
-   Brauen
 
 
 
