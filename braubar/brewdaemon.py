@@ -13,11 +13,11 @@ from service.powerstrip import PowerStrip
 from service.brewlog import BrewLog
 from service.brewconfig import BrewConfig
 # parameter for PID controller
-P = 8000.0
-I = 0.0 # set to zero because cooling is not possible
-D = 350000.0
-MIN = -5.0
-MAX = 5.0
+# P = 8000.0
+# I = 0.0 # set to zero because cooling is not possible
+# D = 350000.0
+# MIN = -2.0
+# MAX = 2.0
 WAIT_THREAD_TIMEOUT = 0.05
 WAIT_THREAD_NAME = "Thread_wait_temp"
 HOST_IP = '0.0.0.0'
@@ -45,8 +45,8 @@ class BrewDaemon:
 
     def __init__(self):
         self.config = BrewConfig()
-        self.pid = Pid(P, I, D)
-        self.pid.range(MIN, MAX)
+        self.pid = Pid(BrewConfig.P, BrewConfig.I, BrewConfig.D)
+        self.pid.range(BrewConfig.MIN, BrewConfig.MAX)
         self.pid.set(0.0)
         self.powerstrip = PowerStrip(self.config.get("powerstrip")["url"])
         self.powerstrip.all_off()
