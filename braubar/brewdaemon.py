@@ -12,6 +12,8 @@ from libs.PIDs import Pid
 from service.powerstrip import PowerStrip
 from service.brewlog import BrewLog
 from service.brewconfig import BrewConfig
+from heatservice import HeatService
+
 # parameter for PID controller
 # P = 8000.0
 # I = 0.0 # set to zero because cooling is not possible
@@ -42,6 +44,7 @@ class BrewDaemon:
     brew_id = None
     chart_service = None
     config = None
+    heatservice = None
 
     def __init__(self):
         self.config = BrewConfig()
@@ -50,6 +53,7 @@ class BrewDaemon:
         self.pid.set(0.0)
         self.powerstrip = PowerStrip(self.config.get("powerstrip")["url"])
         self.powerstrip.all_off()
+        self.heatservice = HeatService()
         self.simplestate = SimpleState()
         self.brew_id = int(round(time.time() * 1000))
 
@@ -68,7 +72,9 @@ class BrewDaemon:
             output = self.pid.step(dt=2.0, input=temp_current)
 
             # switches plugstripe based on output value
-            self.temp_actor(output, temp_current)
+            self.heatservice.temp_actor(output)
+            # self.temp_actor(output, temp_current)
+
             logging.warning(
                     {"temp_actual": temp_current, "change": output, "state": self.state_params, "sensor": sensor_id})
 
@@ -122,20 +128,20 @@ class BrewDaemon:
             pass
         return n
 
-    def temp_actor(self, pid_output, temp_current):
-        """
-        switches the lan powerstripe on pid_output, if greater 0 switch PLUG_1 ON else switch OFF
-        :param pid_output: PID calculated output value
-        :param temp_current: current temperature from sensor
-        :return:
-        """
-        status = self.powerstrip.fetch_status()
-        if pid_output > 0 and status.get(PowerStrip.PLUG_1) == PowerStrip.OFF:
-            print("powerstrip on ", pid_output)
-            PowerStrip().switch(PowerStrip.PLUG_1, PowerStrip.ON)
-        if pid_output < 0 and status.get(PowerStrip.PLUG_1) == PowerStrip.ON:
-            print("powerstrip on ", pid_output)
-            PowerStrip().switch(PowerStrip.PLUG_1, PowerStrip.OFF)
+    # def temp_actor(self, pid_output, temp_current):
+    #     """
+    #     switches the lan powerstripe on pid_output, if greater 0 switch PLUG_1 ON else switch OFF
+    #     :param pid_output: PID calculated output value
+    #     :param temp_current: current temperature from sensor
+    #     :return:
+    #     """
+    #     status = self.powerstrip.fetch_status()
+    #     if pid_output > 0 and status.get(PowerStrip.PLUG_1) == PowerStrip.OFF:
+    #         print("powerstrip on ", pid_output)
+    #         PowerStrip().switch(PowerStrip.PLUG_1, PowerStrip.ON)
+    #     if pid_output < 0 and status.get(PowerStrip.PLUG_1) == PowerStrip.ON:
+    #         print("powerstrip on ", pid_output)
+    #         PowerStrip().switch(PowerStrip.PLUG_1, PowerStrip.OFF)
 
     def start_flask(self, host=HOST_IP, brew_id=None):
         args = ["python3", FLASK_FILE, "--host", host]
