@@ -8,18 +8,13 @@ import subprocess
 
 from service.brewtimer import BrewTimer
 from service.simplestate import SimpleState
-from libs.PIDs import Pid
+# from libs.PIDs import Pid
+from beginnerspid import BeginnersPID as Pid
 from service.powerstrip import PowerStrip
 from service.brewlog import BrewLog
 from service.brewconfig import BrewConfig
 from heatservice import HeatService
 
-# parameter for PID controller
-# P = 8000.0
-# I = 0.0 # set to zero because cooling is not possible
-# D = 350000.0
-# MIN = -2.0
-# MAX = 2.0
 WAIT_THREAD_TIMEOUT = 0.05
 WAIT_THREAD_NAME = "Thread_wait_temp"
 HOST_IP = '0.0.0.0'
@@ -45,23 +40,28 @@ class BrewDaemon:
     chart_service = None
     config = None
     heatservice = None
+    state_params = None
 
     def __init__(self):
         self.config = BrewConfig()
-        self.pid = Pid(BrewConfig.P, BrewConfig.I, BrewConfig.D)
-        self.pid.range(BrewConfig.MIN, BrewConfig.MAX)
-        self.pid.set(0.0)
         self.powerstrip = PowerStrip(self.config.get("powerstrip")["url"])
         self.powerstrip.all_off()
         self.heatservice = HeatService()
         self.simplestate = SimpleState()
         self.brew_id = int(round(time.time() * 1000))
+        self.init_pid()
+
+    def init_pid(self):
+        self.pid = Pid(BrewConfig.P, BrewConfig.I, BrewConfig.D)
+        self.pid.set_setpoint(0.0)
+        self.pid.set_sample_time(2000.0)
+        self.pid.set_output_limits(BrewConfig.MIN, BrewConfig.MAX)
 
     def run(self):
         last_value = 0.0
 
         self.state_params = self.simplestate.start()
-        self.pid.set(self.state_params["temp"])
+        self.pid.set_setpoint(self.state_params["temp"])
 
         while True:
             temp_raw = subprocess.check_output(["tail", "-1", TEMP_RAW_FILE], universal_newlines=True)
@@ -69,14 +69,12 @@ class BrewDaemon:
             temp_current, last_value, sensor_id = self.convert_temp(temp_raw, last_value)
 
             # calculates PID output value
-            output = self.pid.step(dt=2.0, input=temp_current)
-
+            output = self.pid.compute(temp_current)
             # switches plugstripe based on output value
             self.heatservice.temp_actor(output)
-            # self.temp_actor(output, temp_current)
 
             logging.warning(
-                    {"temp_actual": temp_current, "change": output, "state": self.state_params, "sensor": sensor_id})
+                {"temp_actual": temp_current, "change": output, "state": self.state_params, "sensor": sensor_id})
 
             timer_passed_checked = 0.0
             if self.brew_timer is not None:
@@ -95,7 +93,8 @@ class BrewDaemon:
             if not self.state_params["auto"] == True:
                 if self.check_for_next():
                     self.next_state()
-            elif self.state_params["temp"] - TEMP_TOLERANCE <= temp_current: # <= self.state_params["temp"] + TEMP_TOLERANCE:
+            elif self.state_params[
+                "temp"] - TEMP_TOLERANCE <= temp_current:  # <= self.state_params["temp"] + TEMP_TOLERANCE:
                 if self.brew_timer is None:
                     print("Start BrewTimer for ", self.simplestate.state, "and", self.state_params["time"], "seconds")
                     self.brew_timer = BrewTimer(self.state_params["time"], self.next_state)
@@ -103,7 +102,11 @@ class BrewDaemon:
 
     def next_state(self):
         self.state_params = self.simplestate.next()
-        self.pid.set(self.state_params["temp"])
+        if self.state_params["temp"] == 0.0:
+            self.pid.set_mode(Pid.MANUAL)
+        else:
+            self.pid.set_mode(Pid.AUTOMATIC)
+        self.pid.set_setpoint(self.state_params["temp"])
         self.brew_timer = None
 
     def convert_temp(self, temp_raw, last_value):
@@ -127,21 +130,6 @@ class BrewDaemon:
         finally:
             pass
         return n
-
-    # def temp_actor(self, pid_output, temp_current):
-    #     """
-    #     switches the lan powerstripe on pid_output, if greater 0 switch PLUG_1 ON else switch OFF
-    #     :param pid_output: PID calculated output value
-    #     :param temp_current: current temperature from sensor
-    #     :return:
-    #     """
-    #     status = self.powerstrip.fetch_status()
-    #     if pid_output > 0 and status.get(PowerStrip.PLUG_1) == PowerStrip.OFF:
-    #         print("powerstrip on ", pid_output)
-    #         PowerStrip().switch(PowerStrip.PLUG_1, PowerStrip.ON)
-    #     if pid_output < 0 and status.get(PowerStrip.PLUG_1) == PowerStrip.ON:
-    #         print("powerstrip on ", pid_output)
-    #         PowerStrip().switch(PowerStrip.PLUG_1, PowerStrip.OFF)
 
     def start_flask(self, host=HOST_IP, brew_id=None):
         args = ["python3", FLASK_FILE, "--host", host]
