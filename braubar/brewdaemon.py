@@ -91,8 +91,10 @@ class BrewDaemon:
             last_value = float(temp_current)
             # if not self.state_params["auto"] == True:
             if self.check_for_next():
+                if self.brew_timer:
+                    self.brew_timer.cancel()
                 self.next_state()
-            elif self.state_params["temp"] - TEMP_TOLERANCE <= temp_current:
+            elif self.state_params["auto"] == True and self.state_params["temp"] - TEMP_TOLERANCE <= temp_current:
                 if self.brew_timer is None:
                     print("Start BrewTimer for ", self.simplestate.state, "and", self.state_params["time"], "seconds")
                     self.brew_timer = BrewTimer(self.state_params["time"], self.next_state)
@@ -118,13 +120,11 @@ class BrewDaemon:
         return temp, last_value, sensor_id
 
     def check_for_next(self):
-        n = False
         try:
             next_raw = subprocess.check_output(["tail", "-1", NEXT_STATE_FILE], universal_newlines=True)
             n = next_raw.strip() == "True"
             print("FILE CHECK", next_raw.strip(), n)
-            if n:
-                os.system("echo '' > " + NEXT_STATE_FILE)
+            os.system("echo '' > " + NEXT_STATE_FILE)
         finally:
             pass
         return n
