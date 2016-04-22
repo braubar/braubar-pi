@@ -9,11 +9,11 @@ import subprocess
 from service.brewtimer import BrewTimer
 from service.simplestate import SimpleState
 # from libs.PIDs import Pid
-from beginnerspid import BeginnersPID as Pid
+from service.beginnerspid import BeginnersPID as Pid
 from service.powerstrip import PowerStrip
 from service.brewlog import BrewLog
 from service.brewconfig import BrewConfig
-from heatservice import HeatService
+from service.heatservice import HeatService
 
 WAIT_THREAD_TIMEOUT = 0.05
 WAIT_THREAD_NAME = "Thread_wait_temp"

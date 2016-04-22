@@ -1,6 +1,6 @@
-from powerstrip import PowerStrip
-from brewtimer import BrewTimer
-from brewconfig import BrewConfig
+from service.powerstrip import PowerStrip
+from service.brewtimer import BrewTimer
+from service.brewconfig import BrewConfig
 
 
 class HeatService:
