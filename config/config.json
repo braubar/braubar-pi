@@ -4,6 +4,7 @@
   "password": "braubar"
  },
  "braubar": {
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "sensor_port": 50505
  }
 }
