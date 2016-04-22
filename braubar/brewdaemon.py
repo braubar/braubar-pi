@@ -89,11 +89,10 @@ class BrewDaemon:
 
             time.sleep(2)
             last_value = float(temp_current)
-            if not self.state_params["auto"] == True:
-                if self.check_for_next():
-                    self.next_state()
-            elif self.state_params[
-                "temp"] - TEMP_TOLERANCE <= temp_current:  # <= self.state_params["temp"] + TEMP_TOLERANCE:
+            # if not self.state_params["auto"] == True:
+            if self.check_for_next():
+                self.next_state()
+            elif self.state_params["temp"] - TEMP_TOLERANCE <= temp_current:
                 if self.brew_timer is None:
                     print("Start BrewTimer for ", self.simplestate.state, "and", self.state_params["time"], "seconds")
                     self.brew_timer = BrewTimer(self.state_params["time"], self.next_state)
