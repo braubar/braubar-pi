@@ -8,7 +8,6 @@ import subprocess
 
 from service.brewtimer import BrewTimer
 from service.simplestate import SimpleState
-# from libs.PIDs import Pid
 from service.beginnerspid import BeginnersPID as Pid
 from service.powerstrip import PowerStrip
 from service.brewlog import BrewLog
