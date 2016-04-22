@@ -10,9 +10,9 @@ class BeginnersPID:
     MANUAL = False
 
     last_time = int(round(time.time() * 1000))
-    pid_input = None
+    pid_input = 0.0
     output = 0.0
-    setpoint = None
+    setpoint = 0.0
     i_term = 0.0
     last_input = 0.0
     kp = None
@@ -96,7 +96,7 @@ class BeginnersPID:
         self.in_auto = new_auto
 
     def initialize(self):
-        self.last_input =  self.pid_input
+        self.last_input = self.pid_input
         self.i_term = self.output
         if self.i_term > self.out_max:
             self.i_term = self.out_max
