@@ -21,7 +21,7 @@ class BeginnersPID:
     sample_time = 1000  # in milliseconds
     out_min = None
     out_max = None
-    in_auto = True
+    in_auto = False
 
     def __init__(self, kp, ki, kd, o_min=-100, o_max=100):
         self.set_tunings(kp, ki, kd)
