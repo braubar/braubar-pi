@@ -54,10 +54,10 @@ apt-get update && apt-get install supervisor python3 python3-pip iceweasel xinit
 
 ### X Window System 
 
-create `.xinitrc` file in `home` folder
+create `.xsession` file in `home` folder
 
 ```
-matchbox-window-manager &
+matchbox-window-manager -use_titlebar no &
 exec /usr/bin/iceweasel http://localhost:5000
 ```
 
