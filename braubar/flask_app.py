@@ -2,16 +2,15 @@
 import json
 import logging
 import os
+import posix_ipc as ipc
 
 from flask import Flask, jsonify, render_template
 from service.chartService import ChartService
-import service.brewconfig as config
+from service.brewconfig import BrewConfig
 import time
 
-
-logfile = config.BrewConfig.LOG_BASE + time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime()) + ".log"
-logging.basicConfig(filename=logfile, level=logging.WARN, format='{%(asctime)s: %(message)s}')
-
+# logfile = BrewConfig.LOG_BASE + time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime()) + ".log"
+# logging.basicConfig(filename=logfile, level=logging.WARN, format='{%(asctime)s: %(message)s}')
 
 __author__ = 'oli@fesseler.info'
 __version__ = ('0', '0', '1')
@@ -22,13 +21,12 @@ app.config["JSON_SORT_KEY"] = False
 
 @app.route("/")
 def index():
-    recipe_file = open(config.BrewConfig().RECIPE_FILE)
+    recipe_file = open(BrewConfig.RECIPE_FILE)
     recipe = json.load(recipe_file)
     return render_template('index.html',
                            brew_id=brew_id,
                            brew_state=ChartService().status(brew_id),
                            brew_recipe=recipe)
-
 
 
 @app.route('/start')
@@ -53,13 +51,10 @@ def system_state():
 
 @app.route('/next')
 def next():
-    asd = None
     try:
-        os.system("echo 'True' > " + config.BrewConfig.NEXT_STATE_FILE)
-        asd = {"ok": True, "status": ChartService().status(brew_id)}
-    except:
-        print("next failed")
         asd = {"ok": False, "status": ChartService().status(brew_id)}
+        if write_to_queue(True):
+            asd["ok"] = True
     finally:
         return jsonify(asd)
 
@@ -76,7 +71,21 @@ def chart_data():
 
 @app.route('/chart/last_row')
 def last_row():
-    return jsonify(ChartService.last_row(brew_id=brew_id))
+    return jsonify(ChartService().last_row(brew_id=brew_id))
+
+
+def write_to_queue(next_state):
+    try:
+        queue = ipc.MessageQueue(name=BrewConfig.NEXT_QUEUE)
+        queue.send(json.dumps({"next_state": next_state}).encode(encoding=BrewConfig.QUEUE_ENCODING), timeout=0)
+    except ipc.ExistentialError:
+        queue.close()
+        return False
+    except ipc.BusyError:
+        print("socket busy")
+        queue.close()
+        return False
+    return True
 
 
 if __name__ == "__main__":

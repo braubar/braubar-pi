@@ -13,9 +13,11 @@ class BrewConfig:
 
     CONFIG_FILE = "../config/config.json"
     RECIPE_FILE = "../config/recipe.json"
-    TEMP_RAW_FILE = "../data/temp.brew"
-    NEXT_STATE_FILE = "../data/next_state.brew"
+    TEMP_QUEUE = "/arduino_network_temperature_queue"
+    NEXT_QUEUE = "/next_state_queue"
     LOG_BASE = "../log/brewlog_"
+    QUEUE_ENCODING = 'utf-8'
+
 
     def __init__(self):
         self.read_config()
