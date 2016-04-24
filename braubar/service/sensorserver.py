@@ -21,7 +21,7 @@ class Handler(DatagramRequestHandler):
         try:
             queue = ipc.MessageQueue(name=BrewConfig.BRAUBAR_QUEUE)
             content = json.dumps({"temp": temp, "id": sensor_id})
-            queue.send(prepare_data(TYPE_TEMP, content).encode(encoding=BrewConfig.QUEUE_ENCODING), timeout=1)
+            queue.send(prepare_data(TYPE_TEMP, content).encode(encoding=BrewConfig.QUEUE_ENCODING), timeout=5)
         except ipc.ExistentialError:
             queue.close()
             return False

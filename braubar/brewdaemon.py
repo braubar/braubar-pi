@@ -70,6 +70,8 @@ class BrewDaemon:
             while True:
 
                 msg_type, msg = self.receiver.receive()
+                print("msg_type", msg_type)
+                print("msg", msg)
                 if msg_type == TYPE_TEMP:
                     temp_current, sensor_id = self.convert_temp(msg)
 
@@ -174,7 +176,7 @@ if __name__ == "__main__":
 
     try:
         brew_daemon.start_sensor_server(host=HOST_IP, port=SENSOR_PORT)
-        # brew_daemon.start_flask(host=HOST_IP, brew_id=brew_daemon.brew_id)
+        brew_daemon.start_flask(host=HOST_IP, brew_id=brew_daemon.brew_id)
         brew_daemon.run()
     except KeyboardInterrupt:
         print("BrewDaemon is shutting down ...")
