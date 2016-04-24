@@ -5,8 +5,7 @@ import time
 from service.brewconfig import BrewConfig
 from bs4 import BeautifulSoup
 
-logfile = BrewConfig.LOG_BASE + time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime()) + ".log"
-logging.basicConfig(filename=logfile, level=logging.WARN, format='{%(asctime)s: %(message)s}')
+from service.brewconfig import BrewConfig
 
 class PowerStrip:
     url = None
@@ -26,8 +25,11 @@ class PowerStrip:
         PLUG_4: 0
     }
 
-    def __init__(self, url='http://192.168.3.100/', password='braubar'):
-        self.url = url
+    def __init__(self, url=None, password='braubar'):
+        if url:
+            self.url = url
+        else:
+            self.url = BrewConfig().get('powerstrip')['url']
         self.password = password
         self.status = self.login(password)
 
@@ -48,10 +50,9 @@ class PowerStrip:
     def request(self, referrer='', values=''):
         url = self.url + referrer
         try:
-            r = requests.post(url, data=values)
-        except requests.Timeout:
-            print("powerplug timeout")
-            exit(1)
+            r = requests.post(url, data=values, timeout=10.0)
+        except RuntimeError:
+            print("not able to reach powerstrip")
         return self.parse_response(r.text)
 
     def parse_response(self, response_data):
@@ -74,4 +75,5 @@ class PowerStrip:
         self.switch(PowerStrip.PLUG_1, PowerStrip.OFF)
         self.switch(PowerStrip.PLUG_2, PowerStrip.OFF)
         self.switch(PowerStrip.PLUG_3, PowerStrip.OFF)
-        self.switch(PowerStrip.PLUG_4, PowerStrip.OFF)
+        # switched on permanently
+        self.switch(PowerStrip.PLUG_4, PowerStrip.ON)

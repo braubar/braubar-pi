@@ -94,7 +94,9 @@ def temp():
 
 @app.route('/chart/data')
 def chart_data():
-    return ChartService().brew_chart(brew_id=brew_id)
+    a = ChartService().brew_chart(brew_id=brew_id)
+    print(a)
+    return a
 
 
 @app.route('/chart/last_row')

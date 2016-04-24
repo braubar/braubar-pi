@@ -5,6 +5,8 @@ braubar-pi/log/*
 *.pyc
 *.db
 _build/
-*.log
+*.log*
 next_state.brew
 temp.brew
+*~
+*.err*

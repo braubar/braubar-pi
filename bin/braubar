@@ -5,30 +5,43 @@ import atexit
 import argparse
 import signal
 import sys
+import requests
 
-import subprocess
+os.system("export PYTHONPATH=/home/pi/braubar-pi-master/braubar/service")
 
 if os.getcwd().endswith("bin"):
     sys.path.append("../braubar")
+    sys.path.append("../braubar/service")
 else:
     raise Exception("please start braubar from bin directory!!")
 import brewdaemon
+from service.brewconfig import BrewConfig
 
-
-SENSOR_PORT = 50505
-
-brew_daemon = brewdaemon.BrewDaemon()
+SENSOR_PORT = BrewConfig().get("braubar")["sensor_port"]
+POWERSTRIP_URL = BrewConfig().get('powerstrip')['url']
 
 parser = argparse.ArgumentParser(description="BrauBar daemon at your service.")
 parser.add_argument('--host', help="IP-Address to listen on. Default is 0.0.0.0", default="0.0.0.0")
 args = parser.parse_args()
+HOST_IP = args.host
+
+while True:
+    print("retry to establish powerstrip connection")
+    try:
+        if requests.get(POWERSTRIP_URL, timeout=1.0).status_code == 200:
+            break
+    except requests.exceptions.ConnectionError:
+        pass
+    except requests.exceptions.Timeout:
+        pass
+
+
+brew_daemon = brewdaemon.BrewDaemon()
 
 atexit.register(os.killpg, 0, signal.SIGTERM)
 atexit.register(brew_daemon.shutdown)
 
 os.setpgrp()
-
-HOST_IP = args.host
 
 try:
     brew_daemon.start_receive_temp(host=HOST_IP, port=SENSOR_PORT)

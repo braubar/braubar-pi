@@ -1,16 +1,10 @@
 {
- "sensors": {},
- "test": {
-  "foo": "123",
-  "bar": "asd",
-  "baz": "FOO"
- },
  "powerstrip": {
   "url": "http://192.168.3.101/",
-  "password": "braubar",
-  "mac": "88:b6:27:01:1a:e4"
+  "password": "braubar"
  },
  "braubar": {
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "sensor_port": 50505
  }
 }

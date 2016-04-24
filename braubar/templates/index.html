@@ -34,58 +34,66 @@
 
 <body>
 <div class="container">
-<div class="row header">
-    <button id="refresh" class="head-values col-sm-1 refresh" onclick="refresh()">
-        <span  class="glyphicon glyphicon-refresh"></span>
-    </button>
-    <div class="head-values col-sm-2">
-        <div class="top-labels" id="curent_temp_label">Temp current:</div>
-        <div class="top-values" id="current_temp_val">{{brew_state.current_temp}}</div>
-    </div>
-    <div class="head-values col-sm-2">
-        <div class="top-labels" id="target_temp_label">Temp target:</div>
-        <div class="top-values" id="target_temp_val">{{brew_state.target_temp}}</div>
-    </div>
-    <div class="head-values col-sm-2">
-        <div class="top-labels" id="brew_time_label">Time exceded:</div>
-        <div class="top-values" id="brew_time_val">{{brew_state.duration}}</div>
-    </div>
-    <div class="head-values col-sm-2">
-        <div class="top-labels" id="state_label">State</div>
-        <div class="top-values" id="state_val">{{brew_state.current_state}}</div>
-    </div>
-    <div class="head-values col-sm-2">
-        <div class="top-labels" id="temp_increase_label">Temp Increase</div>
-        <div class="top-values" id="temp_increase_val">{{brew_state.temp_increase}}</div>
-    </div>
-    <button id="next" class="head-values col-sm-1 next" onclick="next()">
-        <span  class="glyphicon glyphicon-play"></span>
-    </button>
-</div>
 
-<div class="starter-template">
-    <div class="chart-responsive">
-        <svg id="mychart" height="280" width="690"></svg>
-    </div><!-- /.chart-responsive-->
-</div><!-- /.starter-template-->
 
     <div class="row footer">
         <div class="footer-values col-sm-2">
             <div class="footer-labels" id="">Timer:</div>
-            <div class="footer-values" id="">{{brew_state.timer_passed}}</div>
+            <div class="footer-values" id="">{{ (brew_recipe[brew_state.current_state].time - brew_state.timer_passed)/60 }}</div>
         </div>
-        {%  for name in brew_recipe %}
-        <div class="footer-values col-sm-2">
-            <div class="footer-labels" id="">{{  brew_recipe[name].name }}</div>
-            <div class="footer-values" id="">{{ brew_recipe[name].temp }}</div>
-            {%  if brew_recipe[name].auto %}
-                <div class="footer-values" id="">{{ brew_recipe[name].time }}</div>
-            {% endif %}
+        {% for name in brew_recipe %}
+            <div class="footer-values col-sm-2">
+	        <div class="footer-labels" id="">{{ brew_recipe[name].name }}</div>
+		<div class="row">
+		<div class="col-sm-6">
+        	        <div class="footer-values" id="">{{ brew_recipe[name].temp }}°</div>
+		</div>
+		<div class="col-sm-6">
+                {% if brew_recipe[name].auto %}
+                    <div class="footer-values" id="">{{ brew_recipe[name].time/60 }}</div>
+                {% endif %}
+		</div>
+		</div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div class="starter-template">
+        <div class="chart-responsive">
+            <svg id="mychart" height="310" width="760"></svg>
+        </div><!-- /.chart-responsive-->
+    </div><!-- /.starter-template-->
+
+
+    <div class="row header">
+        <button id="refresh" class="head-values col-sm-1 refresh" onclick="refresh()">
+            <span class="glyphicon glyphicon-refresh"></span>
+        </button>
+        <div class="head-values col-sm-2">
+            <div class="top-labels" id="curent_temp_label">Temp current:</div>
+            <div class="top-values" id="current_temp_val">{{ brew_state.current_temp }}</div>
         </div>
-        {%  endfor %}
+        <div class="head-values col-sm-2">
+            <div class="top-labels" id="target_temp_label">Temp target:</div>
+            <div class="top-values" id="target_temp_val">{{ brew_state.target_temp }}</div>
+        </div>
+        <div class="head-values col-sm-2">
+            <div class="top-labels" id="brew_time_label">Time exceded:</div>
+            <div class="top-values" id="brew_time_val">{{ brew_state.duration }}</div>
+        </div>
+        <div class="head-values col-sm-2">
+            <div class="top-labels" id="state_label">State</div>
+            <div class="top-values" id="state_val">{{ brew_state.current_state }}</div>
+        </div>
+        <div class="head-values col-sm-2">
+            <div class="top-labels" id="temp_increase_label">Temp Increase</div>
+            <div class="top-values" id="temp_increase_val">{{ brew_state.temp_increase }}</div>
+        </div>
+        <button id="next" class="head-values col-sm-1 next" onclick="next()">
+            <span class="glyphicon glyphicon-play"></span>
+        </button>
     </div>
 </div>
-
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->

@@ -5,6 +5,12 @@ import json
 class BrewConfig:
     config = None
 
+    P = 8000.0
+    I = 0.0  # set to zero because cooling is not possible
+    D = 350000.0
+    MIN = -10000.0
+    MAX = 10000.0
+
     CONFIG_FILE = "../config/config.json"
     RECIPE_FILE = "../config/recipe.json"
     TEMP_RAW_FILE = "../data/temp.brew"

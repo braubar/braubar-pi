@@ -25,8 +25,8 @@ function InitChart(data) {
     };
 
     var vis = d3.select("#mychart"),
-        WIDTH = 690,
-        HEIGHT = 280,
+        WIDTH = 720,
+        HEIGHT = 310,
         MARGINS = {
             top: 20,
             right: 20,

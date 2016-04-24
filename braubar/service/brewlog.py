@@ -37,7 +37,7 @@ class BrewLog:
                 print("checking DB and create table...")
             else:
                 logging.error(e)
-                print("big error", e)
+                print("DB Error ", e)
 
     def readAll(self):
         self.db.execute('''
@@ -72,7 +72,7 @@ class BrewLog:
                 )
             ''')
         except sqlite3.Error as e:
-            print("An error occurred:", e.args[0])
+            print("An DB error occurred:", e.args[0])
             self.shutdown()
         finally:
             pass

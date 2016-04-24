@@ -8,6 +8,12 @@ class BrewTimer:
     duration = None
 
     def __init__(self, duration, function):
+        """
+        Call a function after a specified duration
+        :param duration: duration in seconds
+        :param function: called after "duration" seconds
+        :return: instance of BrewTimer
+        """
         self.duration = duration
         self.timer = Timer(self.duration, function)
 
