@@ -1,21 +1,27 @@
 {
   "maischen": {
     "name": "Einmaischen",
-    "temp": 45.0,
+    "temp": 50.0,
     "time": 0,
     "auto": false
   },
+  "eiweissrast": {
+    "name": "Eiweißrast",
+    "temp": 54.0,
+    "time": 300,
+    "auto": true
+  },
   "beta": {
     "name": "beta-Amylase",
-    "temp": 61.0,
+    "temp": 62.0,
     "time": 2700,
     "auto": true
   },
   "alpha": {
     "name": "alpha-Amylase",
     "temp": 71.0,
-    "time": 1800,
-    "auto": true
+    "time": 1500,
+    "auto": false
   },
   "laeutern": {
     "name": "Laeutern",
@@ -25,7 +31,7 @@
   },
   "kochen": {
     "name": "Kochen",
-    "temp": 100.0,
+    "temp": 110.0,
     "time": 5400,
     "auto": true
   },

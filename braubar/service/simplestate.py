@@ -7,6 +7,7 @@ class SimpleState:
     state = None
 
     MAISCHEN = "maischen"
+    EIWEISSRAST = "eiweissrast"
     BETA = "beta"
     ALPHA = "alpha"
     LEUTERN = "laeutern"
@@ -20,6 +21,7 @@ class SimpleState:
     def __init__(self):
         self.state_list = [(self.pause, SimpleState.PAUSE),
                            (self.maischen, SimpleState.MAISCHEN),
+                           (self.eiweissrast, SimpleState.EIWEISSRAST),
                            (self.beta, SimpleState.BETA),
                            (self.alpha, SimpleState.ALPHA),
                            (self.laeutern, SimpleState.LEUTERN),
@@ -47,6 +49,13 @@ class SimpleState:
         # x,time muss noch konvertiert werden
         delay = x.get('time')
         print('beta will be finished after ', delay)
+        return self.recipe[self.state]
+
+    def eiweissrast(self, x):
+        self.state = self.EIWEISSRAST
+        # x,time muss noch konvertiert werden
+        delay = x.get('time')
+        print('eiweissrast will be finished after ', delay)
         return self.recipe[self.state]
 
     def alpha(self, x):
