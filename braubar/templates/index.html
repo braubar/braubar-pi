@@ -39,22 +39,28 @@
     <div class="row footer">
         <div class="footer-values col-sm-2">
             <div class="footer-labels" id="">Timer:</div>
-            <div class="footer-values" id="">{{ brew_state.timer_passed }}</div>
+            <div class="footer-values" id="">{{ (brew_recipe[brew_state.current_state].time - brew_state.timer_passed)/60 }}</div>
         </div>
         {% for name in brew_recipe %}
             <div class="footer-values col-sm-2">
-                <div class="footer-labels" id="">{{ brew_recipe[name].name }}</div>
-                <div class="footer-values" id="">{{ brew_recipe[name].temp }}</div>
+	        <div class="footer-labels" id="">{{ brew_recipe[name].name }}</div>
+		<div class="row">
+		<div class="col-sm-6">
+        	        <div class="footer-values" id="">{{ brew_recipe[name].temp }}°</div>
+		</div>
+		<div class="col-sm-6">
                 {% if brew_recipe[name].auto %}
-                    <div class="footer-values" id="">{{ brew_recipe[name].time }}</div>
+                    <div class="footer-values" id="">{{ brew_recipe[name].time/60 }}</div>
                 {% endif %}
+		</div>
+		</div>
             </div>
         {% endfor %}
     </div>
 
     <div class="starter-template">
         <div class="chart-responsive">
-            <svg id="mychart" height="280" width="690"></svg>
+            <svg id="mychart" height="310" width="760"></svg>
         </div><!-- /.chart-responsive-->
     </div><!-- /.starter-template-->
 
