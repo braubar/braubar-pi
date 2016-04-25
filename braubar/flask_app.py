@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 import json
-import logging
-import os
 import posix_ipc as ipc
 
 from flask import Flask, jsonify, render_template
 from service.chartService import ChartService
 from service.brewconfig import BrewConfig
-import time
+from ipchelper import prepare_data, TYPE_CONTROL, CONTROL_NEXT
 
-# logfile = BrewConfig.LOG_BASE + time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime()) + ".log"
-# logging.basicConfig(filename=logfile, level=logging.WARN, format='{%(asctime)s: %(message)s}')
 
 __author__ = 'oli@fesseler.info'
 __version__ = ('0', '0', '1')
@@ -30,7 +26,7 @@ def index():
 
 
 @app.route('/start')
-def brewStart():
+def brew_start():
     return "Not Implemented"
 
 
@@ -50,13 +46,14 @@ def system_state():
 
 
 @app.route('/next')
-def next():
+def next_state():
+    msg = {"ok": False, "status": None}
     try:
-        asd = {"ok": False, "status": ChartService().status(brew_id)}
-        if write_to_queue(True):
-            asd["ok"] = True
+        msg["status"] = ChartService().status(brew_id)
+        if write_to_queue(CONTROL_NEXT):
+            msg["ok"] = True
     finally:
-        return jsonify(asd)
+        return jsonify(msg)
 
 
 @app.route('/temp')
@@ -74,10 +71,11 @@ def last_row():
     return jsonify(ChartService().last_row(brew_id=brew_id))
 
 
-def write_to_queue(next_state):
+def write_to_queue(control):
     try:
-        queue = ipc.MessageQueue(name=BrewConfig.NEXT_QUEUE)
-        queue.send(json.dumps({"next_state": next_state}).encode(encoding=BrewConfig.QUEUE_ENCODING), timeout=0)
+        msg = {"control": control}
+        queue = ipc.MessageQueue(name=BrewConfig.BRAUBAR_QUEUE)
+        queue.send(prepare_data(TYPE_CONTROL, msg).encode(encoding=BrewConfig.QUEUE_ENCODING), timeout=0)
     except ipc.ExistentialError:
         queue.close()
         return False

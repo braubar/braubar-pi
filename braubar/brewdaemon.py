@@ -5,7 +5,6 @@ import logging
 import signal
 import time
 import subprocess
-import posix_ipc as ipc
 
 from service.brewtimer import BrewTimer
 from service.simplestate import SimpleState
@@ -14,6 +13,7 @@ from service.powerstrip import PowerStrip
 from service.brewlog import BrewLog
 from service.brewconfig import BrewConfig
 from service.heatservice import HeatService
+from service.ipchelper import IPCReceiver, TYPE_TEMP, TYPE_CONTROL
 
 WAIT_THREAD_TIMEOUT = 0.05
 WAIT_THREAD_NAME = "Thread_wait_temp"
@@ -41,20 +41,18 @@ class BrewDaemon:
     config = None
     heatservice = None
     state_params = None
-    receiver_temp = None
-    receiver_next = None
+    receiver = None
 
     def __init__(self):
         self.config = BrewConfig()
-        # self.powerstrip = PowerStrip(self.config.get("powerstrip")["url"])
-        # self.powerstrip.all_off()
+        self.powerstrip = PowerStrip(self.config.get("powerstrip")["url"])
+        self.powerstrip.all_off()
         self.heatservice = HeatService()
         self.simplestate = SimpleState()
         self.brew_id = int(round(time.time() * 1000))
         self.init_pid()
-        self.receiver_next = IPCReceiver(BrewConfig.NEXT_QUEUE)
-        self.receiver_temp = IPCReceiver(BrewConfig.TEMP_QUEUE)
-        print("opened message queue", self.receiver_temp.name, "and", self.receiver_next.name)
+        self.receiver = IPCReceiver(BrewConfig.BRAUBAR_QUEUE)
+        print("opened message queue", self.receiver.name)
 
     def init_pid(self):
         self.pid = Pid(BrewConfig.P, BrewConfig.I, BrewConfig.D)
@@ -63,52 +61,54 @@ class BrewDaemon:
         self.pid.set_output_limits(BrewConfig.MIN, BrewConfig.MAX)
 
     def run(self):
-        last_value = 0.0
-
         self.state_params = self.simplestate.start()
         self.pid.set_setpoint(self.state_params["temp"])
 
         try:
             while True:
 
-                temp_raw = self.receiver_temp.receive()
-                temp_current, sensor_id = self.convert_temp(temp_raw)
+                msg_type, msg = self.receiver.receive()
+                if msg_type == TYPE_TEMP:
+                    temp_current, sensor_id = self.convert_temp(msg)
 
-                # calculates PID output value
-                output = self.pid.compute(temp_current)
-                # switches powerstrip based on output value
-                # self.heatservice.temp_actor(output)
+                    # calculates PID output value
+                    output = self.pid.compute(temp_current)
+                    # switches powerstrip based on output value
+                    self.heatservice.temp_actor(output)
 
-                logging.warning(
-                    {"temp_actual": temp_current, "change": output, "state": self.state_params, "sensor": sensor_id})
+                    logging.warning(
+                        {"temp_actual": temp_current, "change": output, "state": self.state_params,
+                         "sensor": sensor_id})
 
-                timer_passed_checked = 0.0
-                if self.brew_timer is not None:
-                    timer_passed_checked = self.brew_timer.passed()
-                    log.log(temp_current, self.state_params["temp"], output, sensor_id, self.simplestate.state,
-                            self.brew_id, int(self.brew_timer.passed()))
-                else:
-                    log.log(temp_current, self.state_params["temp"], output, sensor_id, self.simplestate.state,
-                            self.brew_id)
+                    timer_passed_checked = 0.0
+                    if self.brew_timer is not None:
+                        timer_passed_checked = self.brew_timer.passed()
+                        log.log(temp_current, self.state_params["temp"], output, sensor_id, self.simplestate.state,
+                                self.brew_id, int(self.brew_timer.passed()))
+                    else:
+                        log.log(temp_current, self.state_params["temp"], output, sensor_id, self.simplestate.state,
+                                self.brew_id)
 
-                print("temp_current", temp_current, "outout", output, "state_temp", self.state_params["temp"],
-                      "timer_passed", timer_passed_checked)
+                    print("temp_current", temp_current, "outout", output, "state_temp", self.state_params["temp"],
+                          "timer_passed", timer_passed_checked)
 
-                time.sleep(1)
+                    if self.state_params["auto"] == True and self.state_params[
+                        "temp"] - TEMP_TOLERANCE <= temp_current:
+                        if self.brew_timer is None:
+                            print("Start BrewTimer for ", self.simplestate.state, "and", self.state_params["time"],
+                                  "seconds")
+                            self.brew_timer = BrewTimer(self.state_params["time"], self.next_state)
+                            self.brew_timer.start()
 
-                if self.check_for_next():
+                    time.sleep(1)
+
+                elif msg_type == TYPE_CONTROL:
                     if self.brew_timer:
                         self.brew_timer.cancel()
                     self.next_state()
-                elif self.state_params["auto"] == True and self.state_params["temp"] - TEMP_TOLERANCE <= temp_current:
-                    if self.brew_timer is None:
-                        print("Start BrewTimer for ", self.simplestate.state, "and", self.state_params["time"],
-                              "seconds")
-                        self.brew_timer = BrewTimer(self.state_params["time"], self.next_state)
-                        self.brew_timer.start()
 
         finally:
-            self.receiver_temp.cleanup()
+            self.receiver.cleanup()
 
     def next_state(self):
         self.state_params = self.simplestate.next()
@@ -142,13 +142,13 @@ class BrewDaemon:
 
     def check_for_next(self):
         try:
-            next_raw = self.receiver_next.receive()
+            next_raw = self.receiver.receive()
 
             n = next_raw.strip() == "True"
             print("FILE CHECK", next_raw.strip(), n)
             os.system("echo '' > " + NEXT_STATE_FILE)
         finally:
-            self.receiver_next.cleanup()
+            self.receiver.cleanup()
         return n
 
     def start_flask(self, host=HOST_IP, brew_id=None):
@@ -158,9 +158,9 @@ class BrewDaemon:
             args.append(str(brew_id))
         subprocess.Popen(args)
 
-    # def start_receive_temp(self, host=HOST_IP, port=None):
-    #     args = ["python3", SENSOR_SERVER_FILE, host, str(port)]
-    #     subprocess.Popen(args)
+    def start_receive_temp(self, host=HOST_IP, port=None):
+        args = ["python3", SENSOR_SERVER_FILE, host, str(port)]
+        subprocess.Popen(args)
 
     def assureComFileExists(self):
         f = open(NEXT_STATE_FILE, 'w')
@@ -171,31 +171,6 @@ class BrewDaemon:
     def shutdown(self):
         self.powerstrip.all_off()
         self.powerstrip.logout()
-
-
-class IPCReceiver:
-    name = None
-    queue = None
-
-    def __init__(self, mq_name):
-        self.name = mq_name
-        self.queue = ipc.MessageQueue(name=self.name, flags=ipc.O_CREAT)
-        while True:
-            try:
-                self.queue.receive(0)
-            except ipc.BusyError:
-                break
-
-    def cleanup(self):
-        if self.queue:
-            try:
-                self.queue.close()
-                self.queue.unlink()
-            except ipc.ExistentialError:
-                pass
-
-    def receive(self):
-        return self.queue.receive()[0].decode(BrewConfig.QUEUE_ENCODING)
 
 
 if __name__ == "__main__":
@@ -216,7 +191,7 @@ if __name__ == "__main__":
     HOST_IP = args.host
 
     try:
-        # brew_daemon.start_receive_temp(host=HOST_IP, port=SENSOR_PORT)
+        brew_daemon.start_receive_temp(host=HOST_IP, port=SENSOR_PORT)
         brew_daemon.assureComFileExists()
         brew_daemon.start_flask(host=HOST_IP, brew_id=brew_daemon.brew_id)
         brew_daemon.run()

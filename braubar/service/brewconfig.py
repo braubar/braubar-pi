@@ -13,8 +13,7 @@ class BrewConfig:
 
     CONFIG_FILE = "../config/config.json"
     RECIPE_FILE = "../config/recipe.json"
-    TEMP_QUEUE = "/arduino_network_temperature_queue"
-    NEXT_QUEUE = "/next_state_queue"
+    BRAUBAR_QUEUE = "/braubar_queue"
     LOG_BASE = "../log/brewlog_"
     QUEUE_ENCODING = 'utf-8'
 
