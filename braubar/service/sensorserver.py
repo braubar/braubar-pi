@@ -1,8 +1,10 @@
+import json
 from socketserver import UDPServer, DatagramRequestHandler
-import os
+from brewconfig import BrewConfig
+import posix_ipc as ipc
+from ipchelper import prepare_data, TYPE_TEMP
 
 SYNC_BITS = b'\x0f\x00\x0f\x0f'
-TEMP_RAW_FILE = "../data/temp.brew"
 
 
 class Handler(DatagramRequestHandler):
@@ -13,14 +15,21 @@ class Handler(DatagramRequestHandler):
         id_data = int(raw_data[6])
         end_sync = raw_data[7:]
         if start_sync == end_sync == SYNC_BITS:
-            f = open(TEMP_RAW_FILE, mode='a')
-            s = str(id_data) + ':' + str(temp) + os.linesep
-            f.write(s)
-            f.close()
-            # TODO speichern!
-            print("message:", s)
-            print("id:", int(id_data))
-            print("from:", self.client_address)
+            self.write_to_queue(temp, id_data)
+
+    def write_to_queue(self, temp, sensor_id):
+        try:
+            queue = ipc.MessageQueue(name=BrewConfig.BRAUBAR_QUEUE)
+            content = json.dumps({"temp": temp, "id": sensor_id})
+            queue.send(prepare_data(TYPE_TEMP, content).encode(encoding=BrewConfig.QUEUE_ENCODING), timeout=1)
+        except ipc.ExistentialError:
+            queue.close()
+            return False
+        except ipc.BusyError:
+            print("socket busy")
+            queue.close()
+            return False
+        return True
 
 
 class SensorServer:
@@ -28,8 +37,8 @@ class SensorServer:
         addr = ("", 50505)
         print("listening on %s:%s" % addr)
 
-        server = UDPServer(addr, Handler)
-        server.serve_forever()
+        sensor_server = UDPServer(addr, Handler)
+        sensor_server.serve_forever()
 
 
 if __name__ == "__main__":

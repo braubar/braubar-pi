@@ -2,4 +2,5 @@ flask-socketio
 eventlet
 beautifulsoup4 >= 4.4
 requests >= 2.3
-flask >=0.10
+flask >= 0.10
+posix_ipc >= 1.0
