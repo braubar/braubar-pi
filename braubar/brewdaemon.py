@@ -130,27 +130,6 @@ class BrewDaemon:
             print("Could not get correct temperature value")
         return temp, sensor_id
 
-    def check_for_next_file(self):
-        try:
-            next_raw = subprocess.check_output(["tail", "-1", BrewConfig.NEXT_STATE_FILE], universal_newlines=True)
-            n = next_raw.strip() == "True"
-            print("FILE CHECK", next_raw.strip(), n)
-            os.system("echo '' > " + NEXT_STATE_FILE)
-        finally:
-            pass
-        return n
-
-    def check_for_next(self):
-        try:
-            next_raw = self.receiver.receive()
-
-            n = next_raw.strip() == "True"
-            print("FILE CHECK", next_raw.strip(), n)
-            os.system("echo '' > " + NEXT_STATE_FILE)
-        finally:
-            self.receiver.cleanup()
-        return n
-
     def start_flask(self, host=HOST_IP, brew_id=None):
         args = ["python3", FLASK_FILE, "--host", host]
         if brew_id:
@@ -158,15 +137,9 @@ class BrewDaemon:
             args.append(str(brew_id))
         subprocess.Popen(args)
 
-    def start_receive_temp(self, host=HOST_IP, port=None):
+    def start_sensor_server(self, host=HOST_IP, port=None):
         args = ["python3", SENSOR_SERVER_FILE, host, str(port)]
         subprocess.Popen(args)
-
-    def assureComFileExists(self):
-        f = open(BrewConfig.NEXT_STATE_FILE, 'w')
-        f.close()
-        f = open(BrewConfig.TEMP_RAW_FILE, 'w')
-        f.close()
 
     def shutdown(self):
         self.powerstrip.all_off()
@@ -191,8 +164,7 @@ if __name__ == "__main__":
     HOST_IP = args.host
 
     try:
-        brew_daemon.start_receive_temp(host=HOST_IP, port=SENSOR_PORT)
-        brew_daemon.assureComFileExists()
+        brew_daemon.start_sensor_server(host=HOST_IP, port=SENSOR_PORT)
         brew_daemon.start_flask(host=HOST_IP, brew_id=brew_daemon.brew_id)
         brew_daemon.run()
     except KeyboardInterrupt:
