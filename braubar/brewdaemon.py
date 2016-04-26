@@ -58,7 +58,7 @@ class BrewDaemon:
     def init_pid(self):
         self.pid = Pid(BrewConfig.P, BrewConfig.I, BrewConfig.D)
         self.pid.set_setpoint(0.0)
-        self.pid.set_sample_time(2000.0)
+        self.pid.set_sample_time(1000.0)
         self.pid.set_output_limits(BrewConfig.MIN, BrewConfig.MAX)
 
     def run(self):
@@ -66,14 +66,22 @@ class BrewDaemon:
         self.pid.set_setpoint(self.state_params["temp"])
 
         try:
+            old_calculation_time = None
             while True:
 
                 msg_type, msg = self.receiver.receive()
                 if msg_type == TYPE_TEMP:
                     temp_current, sensor_id = self.convert_temp(msg)
 
+                    # computes timedelta for pid
+                    calculation_time = int(round(time.time() * 1000))
+                    if old_calculation_time:
+                        self.pid.set_sample_time(calculation_time - old_calculation_time)
+                    old_calculation_time = calculation_time
+
                     # calculates PID output value
                     output = self.pid.compute(temp_current)
+
                     # switches powerstrip based on output value
                     self.heatservice.temp_actor(output)
 
