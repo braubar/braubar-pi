@@ -26,10 +26,10 @@ class ChartService:
         data = db.fetchall()[0]
         conn.close()
         return {
-            "brew_time": data[0],
+            "brew_time": data[0][:-3],
             "current_temp": data[1],
             "target_temp": data[2],
-            "change": data[3],
+            "change": self.calc_pid_output_for_chart(data[3]),
             "sensor_id": data[4],
             "current_state": data[5],
             "brew_id": data[6],
@@ -60,7 +60,7 @@ class ChartService:
             "date": data[0],
             "current": temp,
             "target": data[2],
-            "change": change / 1000 / 2 + 50,
+            "change": self.calc_pid_output_for_chart(change),
             "sensor": data[4],
             "state": data[5],
             "brew_id": data[6]
@@ -94,12 +94,12 @@ class ChartService:
             change = row[3]
             if (last_temp <= temp - TOLERANCE or temp + TOLERANCE <= last_temp) or last_change != change:
                 r = {
-                    "date": row[0],
-                    "current": temp,
-                    "target": row[2],
-                    "change": change / 1000 / 2 + 50,
-                    "sensor": row[4],
-                    "state": row[5],
+                    "brew_time": row[0][:-3],
+                    "current_temp": temp,
+                    "target_temp": row[2],
+                    "change": self.calc_pid_output_for_chart(change),
+                    "sensor_id": row[4],
+                    "current_state": row[5],
                     "brew_id": row[6]
                 }
                 result.append(r)
@@ -190,3 +190,6 @@ class ChartService:
         brew_time = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%f")
         brew_start = datetime.datetime.fromtimestamp(start_time / 1000)
         return (brew_time - brew_start) / datetime.timedelta(milliseconds=1) / 1000 / 60
+
+    def calc_pid_output_for_chart(self, output):
+        return output / 1000 / 2 + 50

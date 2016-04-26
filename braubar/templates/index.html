@@ -18,6 +18,7 @@
     <link href="/static/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
+    <link href="/static/css/c3.min.css" rel="stylesheet">
     <link href="/static/css/brewboard.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
@@ -59,9 +60,8 @@
     </div>
 
     <div class="starter-template">
-        <div class="chart-responsive">
-            <svg id="mychart" height="310" width="760"></svg>
-        </div><!-- /.chart-responsive-->
+        <div id="temp-chart">
+        </div><!-- /.temp-chart-->
     </div><!-- /.starter-template-->
 
 
@@ -103,6 +103,7 @@
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="/static/js/ie10-viewport-bug-workaround.js"></script>
 <script src="/static/js/d3.js"></script>
+<script src="/static/js/c3.min.js"></script>
 <script type="text/javascript" src="/static/js/socket.io.min.js"></script>
 <script src="/static/js/ChartController.js"></script>
 <script src="/static/js/BrewBoard.js"></script>

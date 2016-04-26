@@ -75,3 +75,8 @@ button.footer-values  {
 .row.footer {
     background-color: #bbb64d;
 }
+
+
+/*-- C3 Chart Line --*/
+.c3-line {
+  stroke-width: 2px; }

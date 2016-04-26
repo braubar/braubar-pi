@@ -23,6 +23,8 @@ cs = ChartService()
 def index():
     recipe_file = open(BrewConfig.RECIPE_FILE)
     recipe = json.load(recipe_file)
+    print(cs.status(brew_id))
+    print(recipe)
     return render_template('index.html',
                            brew_id=brew_id,
                            brew_state=cs.status(brew_id),
@@ -37,8 +39,18 @@ def handle_connected(connected_msg):
 
 @socketio.on("update chart")
 def handle_update(update_msg):
-    emit("update", cs.last_row(brew_id=brew_id))
+    emit("update chart", json.dumps(cs.status(brew_id=brew_id)))
     print("emitted update chart after message: ", update_msg)
+
+@socketio.on("next")
+def next_state(next):
+    msg = {"ok": False, "status": None}
+    try:
+        msg["status"] = cs.status(brew_id)
+        if write_to_queue(CONTROL_NEXT):
+            msg["ok"] = True
+    finally:
+        emit("next", json.dumps(msg))
 
 
 @app.route('/start')
