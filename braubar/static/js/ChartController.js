@@ -50,7 +50,8 @@ function update_board(data) {
     $("#state_val").text(data.current_state);
     $("#target_temp_val").text(data.target_temp);
     $("#timer_value").text(data.timer_passed);
-
+    $("#temp_increase_val").text(data.temp_increase);
+    $("#brew_time_val").text(data.duration);
 }
 
 function update_chart(chart, dataa) {
