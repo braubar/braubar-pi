@@ -1,30 +1,56 @@
 $(document).ready(function () {
-    //setInterval(function() {
-    //    location.reload(true);
-    //}, 5000);
-    //var socket = io.connect('http://localhost:5000');
-    var socket = io.connect('http://' + document.domain + ':' + location.port);
-    socket.on('connect', function() {
-        socket.emit('my event', {data: 'I\'m connected!'});
-        console.log("moin moin")
+    var socket = io();
+    socket.on('connect', function () {
+        socket.emit('connected', {data: 'I\'m connected!'});
+        console.log("connected to " + document.domain + " at port: " + location.port)
+        socket.on("disconnect", function () {
+            console.log("disconnected")
+        })
     });
-    socket.on('fullchart', function(data) {
+    socket.on('fullchart', function (data) {
         InitChart(JSON.parse(data));
     });
-    $.getJSON('/chart/data', function (data) {
-        InitChart(data);
+    socket.on('update', function (data) {
+        update_chart(data);
+        update_board(data);
+        console.log(data)
     });
+
+    $("#refresh").click(function () {
+        socket.emit("update chart", {msg: 'update los los!'})
+    });
+
+    $("#next").click(function () {
+        socket.emit("next", {msg: "next"})
+    });
+
+    setInterval(function () {
+        socket.emit("update chart", {msg: 'update los los!'})
+    }, 3000)
 });
 
+function update_board(data) {
+    $("#current_temp_val").text(data.current_temp);
+    $("#state_val").text(data.current_state);
+    $("#target_temp_val").text(data.target_temp);
+    $("#timer_value").text(data.timer_passed);
+    
+}
+
+function update_chart(data) {
+    lineData = data
+}
+var lineData;
+var vis;
 
 function InitChart(data) {
 
-    var lineData = data;
-    var calcTime = function(start, current) {
-        return (Date.parse(current) - start)/1000/60
+    lineData = data;
+    var calcTime = function (start, current) {
+        return (Date.parse(current) - start) / 1000 / 60
     };
 
-    var vis = d3.select("#mychart"),
+    vis = d3.select("#mychart"),
         WIDTH = 720,
         HEIGHT = 310,
         MARGINS = {

@@ -50,6 +50,7 @@ class BrewDaemon:
         self.heatservice = HeatService()
         self.simplestate = SimpleState()
         self.brew_id = int(round(time.time() * 1000))
+        print("Brew ID:", self.brew_id)
         self.init_pid()
         self.receiver = IPCReceiver(BrewConfig.BRAUBAR_QUEUE)
         print("opened message queue", self.receiver.name)
@@ -165,7 +166,7 @@ if __name__ == "__main__":
 
     try:
         brew_daemon.start_sensor_server(host=HOST_IP, port=SENSOR_PORT)
-        brew_daemon.start_flask(host=HOST_IP, brew_id=brew_daemon.brew_id)
+        # brew_daemon.start_flask(host=HOST_IP, brew_id=brew_daemon.brew_id)
         brew_daemon.run()
     except KeyboardInterrupt:
         print("BrewDaemon is shutting down ...")

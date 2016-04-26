@@ -38,19 +38,19 @@
 
     <div class="row footer">
         <div class="footer-values col-sm-2">
-            <div class="footer-labels" id="">Timer:</div>
-            <div class="footer-values" id="">{{ (brew_recipe[brew_state.current_state].time - brew_state.timer_passed)/60 }}</div>
+            <div class="footer-labels" id="timer_label">Timer:</div>
+            <div class="footer-values" id="timer_value">{{ (brew_recipe[brew_state.current_state].time - brew_state.timer_passed)/60 }}</div>
         </div>
         {% for name in brew_recipe %}
             <div class="footer-values col-sm-2">
-	        <div class="footer-labels" id="">{{ brew_recipe[name].name }}</div>
+	        <div class="footer-labels" id="state_{{ name }}_label">{{ brew_recipe[name].name }}</div>
 		<div class="row">
 		<div class="col-sm-6">
-        	        <div class="footer-values" id="">{{ brew_recipe[name].temp }}°</div>
+        	        <div class="footer-values" id="state_{{ name }}_degree">{{ brew_recipe[name].temp }}°</div>
 		</div>
 		<div class="col-sm-6">
                 {% if brew_recipe[name].auto %}
-                    <div class="footer-values" id="">{{ brew_recipe[name].time/60 }}</div>
+                    <div class="footer-values" id="state_{{ name }}_time">{{ brew_recipe[name].time/60 }}</div>
                 {% endif %}
 		</div>
 		</div>
@@ -66,7 +66,7 @@
 
 
     <div class="row header">
-        <button id="refresh" class="head-values col-sm-1 refresh" onclick="refresh()">
+        <button id="refresh" class="head-values col-sm-1 refresh">
             <span class="glyphicon glyphicon-refresh"></span>
         </button>
         <div class="head-values col-sm-2">
@@ -89,7 +89,7 @@
             <div class="top-labels" id="temp_increase_label">Temp Increase</div>
             <div class="top-values" id="temp_increase_val">{{ brew_state.temp_increase }}</div>
         </div>
-        <button id="next" class="head-values col-sm-1 next" onclick="next()">
+        <button id="next" class="head-values col-sm-1 next">
             <span class="glyphicon glyphicon-play"></span>
         </button>
     </div>

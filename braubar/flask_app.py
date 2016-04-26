@@ -1,15 +1,9 @@
 # -*- coding: utf-8 -*-
-import eventlet
-
-eventlet.monkey_patch()
-
-import time
 import json
 import posix_ipc as ipc
 
 from flask import Flask, jsonify, render_template
 from flask_socketio import SocketIO, send, emit
-from threading import Thread
 from service.chartService import ChartService
 from service.brewconfig import BrewConfig
 from ipchelper import prepare_data, TYPE_CONTROL, CONTROL_NEXT
@@ -25,30 +19,26 @@ thread = None
 cs = ChartService()
 
 
-def background_thread():
-    """Example of how to send server generated events to clients."""
-    count = 0
-    while True:
-        time.sleep(3)
-        count += 1
-        socketio.emit('fullchart',
-                      cs.last_row2(brew_id=brew_id))
-
-
 @app.route('/')
 def index():
-    global thread
-    if thread is None:
-        thread = Thread(target=background_thread)
-        thread.daemon = True
-        thread.start()
-
     recipe_file = open(BrewConfig.RECIPE_FILE)
     recipe = json.load(recipe_file)
     return render_template('index.html',
                            brew_id=brew_id,
                            brew_state=cs.status(brew_id),
                            brew_recipe=recipe)
+
+
+@socketio.on("connected")
+def handle_connected(connected_msg):
+    emit("fullchart", cs.brew_chart(brew_id=brew_id))
+    print(connected_msg)
+
+
+@socketio.on("update chart")
+def handle_update(update_msg):
+    emit("update", cs.last_row(brew_id=brew_id))
+    print("emitted update chart after message: ", update_msg)
 
 
 @app.route('/start')
