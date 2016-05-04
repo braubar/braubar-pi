@@ -112,15 +112,6 @@ def write_to_queue(control):
     try:
         msg = {"control": control}
         queue = ipc.MessageQueue(name=BrewConfig.BRAUBAR_QUEUE)
-<<<<<<< HEAD
-        queue.send(prepare_data(TYPE_CONTROL, msg).encode(encoding=BrewConfig.QUEUE_ENCODING), timeout=0)
-    except ipc.ExistentialError as e:
-        print("flask_app:", e)
-        queue.close()
-        return False
-    except ipc.BusyError as e:
-        print("flask_app", e)
-=======
         queue.send(prepare_data(TYPE_CONTROL, msg).encode(encoding=BrewConfig.QUEUE_ENCODING), timeout=5)
     except ipc.ExistentialError as e:
         print("IPC Extential Error happened", e)
@@ -128,7 +119,6 @@ def write_to_queue(control):
         return False
     except ipc.BusyError as e:
         print("socket busy error: write_to_queue", e)
->>>>>>> 9ae37c23b91c9f81650bb4acf234043d949cc203
         queue.close()
         return False
     except Exception as e:
