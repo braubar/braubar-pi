@@ -39,7 +39,7 @@ def handle_connected(connected_msg):
 
 @socketio.on("update chart")
 def handle_update(update_msg):
-    emit("update chart", json.dumps(cs.status(brew_id=brew_id)))
+    socketio.emit("update chart", json.dumps(cs.status(brew_id=brew_id)))
     print("emitted update chart after message: ", update_msg)
 
 @socketio.on("next")
@@ -49,8 +49,10 @@ def next_state(next):
         msg["status"] = cs.status(brew_id)
         if write_to_queue(CONTROL_NEXT):
             msg["ok"] = True
+    except Exception as e:
+        print("flask_app:", e)
     finally:
-        emit("next", json.dumps(msg))
+        socketio.emit("next", json.dumps(msg))
 
 
 @app.route('/start')
@@ -106,11 +108,12 @@ def write_to_queue(control):
         msg = {"control": control}
         queue = ipc.MessageQueue(name=BrewConfig.BRAUBAR_QUEUE)
         queue.send(prepare_data(TYPE_CONTROL, msg).encode(encoding=BrewConfig.QUEUE_ENCODING), timeout=0)
-    except ipc.ExistentialError:
+    except ipc.ExistentialError as e:
+        print("flask_app:", e)
         queue.close()
         return False
-    except ipc.BusyError:
-        print("socket busy")
+    except ipc.BusyError as e:
+        print("flask_app", e)
         queue.close()
         return False
     return True
