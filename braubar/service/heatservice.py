@@ -17,7 +17,7 @@ class HeatService:
 
         status = PowerStrip().fetch_status()
         if pid_output > 0.0 and status.get(PowerStrip.PLUG_1) == PowerStrip.OFF:
-            actor = HeatService.DEFAULT_TIME / (pid_output / BrewConfig.MAX)
+            actor = HeatService.DEFAULT_TIME * (pid_output / BrewConfig.MAX)
             print("powerstrip on ", pid_output, "for", actor, "sec.")
             if self.alive():
                 pass
