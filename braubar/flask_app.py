@@ -6,7 +6,7 @@ from flask import Flask, jsonify, render_template
 from flask_socketio import SocketIO, send, emit
 from service.chartService import ChartService
 from service.brewconfig import BrewConfig
-from ipchelper import prepare_data, TYPE_CONTROL, CONTROL_NEXT
+from service.ipchelper import prepare_data, TYPE_CONTROL, CONTROL_NEXT
 
 __author__ = 'oli@fesseler.info'
 __version__ = ('0', '0', '1')
@@ -47,10 +47,12 @@ def next_state(next):
     msg = {"ok": False, "status": None}
     try:
         msg["status"] = cs.status(brew_id)
+        print("status:", cs.status(brew_id))
         if write_to_queue(CONTROL_NEXT):
+            print("write to queue worked")
             msg["ok"] = True
     except Exception as e:
-        print("flask_app:", e)
+        print("flask_app error:", e)
     finally:
         socketio.emit("next", json.dumps(msg))
 
@@ -82,6 +84,9 @@ def next_state():
         msg["status"] = cs.status(brew_id)
         if write_to_queue(CONTROL_NEXT):
             msg["ok"] = True
+    except Exception as e:
+        print("error: ", e)
+
     finally:
         return jsonify(msg)
 
@@ -107,6 +112,7 @@ def write_to_queue(control):
     try:
         msg = {"control": control}
         queue = ipc.MessageQueue(name=BrewConfig.BRAUBAR_QUEUE)
+<<<<<<< HEAD
         queue.send(prepare_data(TYPE_CONTROL, msg).encode(encoding=BrewConfig.QUEUE_ENCODING), timeout=0)
     except ipc.ExistentialError as e:
         print("flask_app:", e)
@@ -114,8 +120,20 @@ def write_to_queue(control):
         return False
     except ipc.BusyError as e:
         print("flask_app", e)
+=======
+        queue.send(prepare_data(TYPE_CONTROL, msg).encode(encoding=BrewConfig.QUEUE_ENCODING), timeout=5)
+    except ipc.ExistentialError as e:
+        print("IPC Extential Error happened", e)
         queue.close()
         return False
+    except ipc.BusyError as e:
+        print("socket busy error: write_to_queue", e)
+>>>>>>> 9ae37c23b91c9f81650bb4acf234043d949cc203
+        queue.close()
+        return False
+    except Exception as e:
+        print("error: ", e)
+
     return True
 
 

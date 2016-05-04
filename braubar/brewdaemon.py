@@ -70,6 +70,8 @@ class BrewDaemon:
             while True:
 
                 msg_type, msg = self.receiver.receive()
+                print("msg_type", msg_type)
+                print("msg", msg)
                 if msg_type == TYPE_TEMP:
                     temp_current, sensor_id = self.convert_temp(msg)
 

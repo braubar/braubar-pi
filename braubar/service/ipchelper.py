@@ -1,13 +1,11 @@
 import json
 import posix_ipc as ipc
 
-from brewconfig import BrewConfig
-
 TYPE_TEMP = "temp"
 TYPE_CONTROL = "control"
 CONTROL_NEXT = "next"
 CONTROL_START = "start"
-
+QUEUE_ENCODING = "utf-8"
 
 class IPCReceiver:
     name = None
@@ -33,7 +31,7 @@ class IPCReceiver:
                 pass
 
     def receive(self):
-        msg = json.loads(self.queue.receive()[0].decode(BrewConfig.QUEUE_ENCODING))
+        msg = json.loads(self.queue.receive()[0].decode(QUEUE_ENCODING))
         return msg["type"], msg["content"]
 
 
