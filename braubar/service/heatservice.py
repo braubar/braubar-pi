@@ -23,7 +23,7 @@ class HeatService:
                 pass
             else:
                 self.start(actor)
-        if pid_output < 0.0 and status.get(PowerStrip.PLUG_1) == PowerStrip.ON:
+        if pid_output <= 0.0 and status.get(PowerStrip.PLUG_1) == PowerStrip.ON:
             if self.alive():
                 self.stop()
                 print("stopped timer")
