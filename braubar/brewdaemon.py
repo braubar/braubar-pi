@@ -108,9 +108,6 @@ class BrewDaemon:
                                   "seconds")
                             self.brew_timer = BrewTimer(self.state_params["time"], self.next_state)
                             self.brew_timer.start()
-
-                    time.sleep(1)
-
                 elif msg_type == TYPE_CONTROL:
                     if self.brew_timer:
                         self.brew_timer.cancel()
@@ -174,7 +171,7 @@ if __name__ == "__main__":
 
     try:
         brew_daemon.start_sensor_server(host=HOST_IP, port=SENSOR_PORT)
-        # brew_daemon.start_flask(host=HOST_IP, brew_id=brew_daemon.brew_id)
+        brew_daemon.start_flask(host=HOST_IP, brew_id=brew_daemon.brew_id)
         brew_daemon.run()
     except KeyboardInterrupt:
         print("BrewDaemon is shutting down ...")

@@ -19,7 +19,8 @@ class IPCReceiver:
         while True:
             try:
                 self.queue.receive(0)
-            except ipc.BusyError:
+            except ipc.BusyError as e:
+                print("ipchelper:", e)
                 break
 
     def cleanup(self):
@@ -27,7 +28,8 @@ class IPCReceiver:
             try:
                 self.queue.close()
                 self.queue.unlink()
-            except ipc.ExistentialError:
+            except ipc.ExistentialError as e:
+                print("ipchelper:", e)
                 pass
 
     def receive(self):
