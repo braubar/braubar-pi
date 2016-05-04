@@ -3,7 +3,7 @@ $(document).ready(function () {
     var chart;
     socket.on('connect', function () {
         socket.emit('connected', {data: 'I\'m connected!'});
-        console.log("connected to " + document.domain + " at port: " + location.port)
+        // console.log("connected to " + document.domain + " at port: " + location.port)
         socket.on("disconnect", function () {
             console.log("disconnected")
         })
@@ -13,7 +13,7 @@ $(document).ready(function () {
     });
     socket.on('update chart', function (dat) {
         data = JSON.parse(dat);
-        console.log(dat)
+        // console.log(dat)
         update_chart(chart, data);
         update_board(data);
     });
@@ -36,13 +36,13 @@ $(document).ready(function () {
     });
 
     $("#next").click(function () {
-        console.log("next clicked")
+        // console.log("next clicked")
         socket.emit("next", {msg: "next"})
     });
 
     setInterval(function () {
         socket.emit("update chart", {msg: 'update los los!'})
-    }, 3000)
+    }, 5000)
 });
 
 function update_board(data) {
@@ -71,7 +71,7 @@ function update_chart(chart, dataa) {
     })
 }
 function InitChart(data) {
-    console.log(data);
+    // console.log(data);
     var chart = c3.generate({
         bindto: '#temp-chart',
         size: {
