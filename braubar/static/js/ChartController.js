@@ -26,6 +26,8 @@ $(document).ready(function () {
         data = JSON.parse(dat);
         if (!data.ok) {
             alert("something went wrong")
+        } else {
+            $("#next").css("background-color", "#ffb64d")
         }
         update_board(data.status)
 
@@ -37,6 +39,7 @@ $(document).ready(function () {
 
     $("#next").click(function () {
         // console.log("next clicked")
+        $("#next").css("background-color", "red")
         socket.emit("next", {msg: "next"})
     });
 
@@ -49,7 +52,7 @@ function update_board(data) {
     $("#current_temp_val").text(data.current_temp);
     $("#state_val").text(data.current_state);
     $("#target_temp_val").text(data.target_temp);
-    $("#timer_value").text(data.timer_passed);
+    $("#timer_value").text(data.timer_passed/60); // TODO timer_delta
     $("#temp_increase_val").text(data.temp_increase);
     $("#brew_time_val").text(data.duration);
 }
