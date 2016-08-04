@@ -2,6 +2,8 @@ import time
 
 from braubar.service.powerstrip import PowerStrip
 
+
+
 s = PowerStrip()
 
 s.fetch_status()
