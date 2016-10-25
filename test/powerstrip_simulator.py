@@ -1,7 +1,6 @@
 import http.server
 
-
-class powerstripRequestHandler(http.server.BaseHTTPRequestHandler):
+class PowerstripRequestHandler(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
         self.send_header("Content-type", "text/html")
@@ -19,7 +18,11 @@ class powerstripRequestHandler(http.server.BaseHTTPRequestHandler):
         self.wfile.write(b"</head><body><p>alles an</p>")
         self.wfile.write(b"</body></html>")
 
-server_address = ("powerstrip", 8080)
-http_server = http.server.HTTPServer(server_address, powerstripRequestHandler)
-http_server.server_port = 8080
-http_server.serve_forever()
+
+def run():
+    server_address = ("powerstrip", 8080)
+    http_server = http.server.HTTPServer(server_address, PowerstripRequestHandler)
+    http_server.server_port = 8080
+    http_server.serve_forever()
+
+run()
