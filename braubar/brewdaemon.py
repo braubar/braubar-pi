@@ -73,6 +73,9 @@ class BrewDaemon:
                 print("msg_type", msg_type)
                 print("msg", msg)
                 if msg_type == TYPE_TEMP:
+                    # TODO sollte vielleicht als eigener thread laufen..
+                    # oder mit einer fifo queue.... damit nix schief geht. ipc pufert ja auch schon
+
                     temp_current, sensor_id = self.convert_temp(msg)
 
                     # computes timedelta for pid
@@ -114,7 +117,15 @@ class BrewDaemon:
                     if self.brew_timer:
                         self.brew_timer.cancel()
                     self.next_state()
-
+        except Exception as e:
+            print("uuiiii: ", e)
+        except ipc.ExistentialError:
+            queue.close()
+            return False
+        except ipc.BusyError:
+            print("socket busy")
+            queue.close()
+            return False
         finally:
             self.receiver.cleanup()
 

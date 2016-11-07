@@ -18,10 +18,18 @@ class Handler(DatagramRequestHandler):
             self.write_to_queue(temp, id_data)
 
     def write_to_queue(self, temp, sensor_id):
+        message_count = 0
+        current_messages = 0
         try:
             queue = ipc.MessageQueue(name=BrewConfig.BRAUBAR_QUEUE)
             content = json.dumps({"temp": temp, "id": sensor_id})
             queue.send(prepare_data(TYPE_TEMP, content).encode(encoding=BrewConfig.QUEUE_ENCODING), timeout=5)
+            current_messages = queue.current_messages
+            message_count += 1
+            print("current messages: ", queue.current_messages,
+                  "max_messages: ", queue.max_messages,
+                  "max_message_size", queue.max_message_size)
+
         except ipc.ExistentialError:
             queue.close()
             return False
@@ -29,6 +37,10 @@ class Handler(DatagramRequestHandler):
             print("socket busy")
             queue.close()
             return False
+        except OSError as ose:
+            print("OSERROR: ",ose)
+            print("current_messages: ", current_messages)
+
         return True
 
 

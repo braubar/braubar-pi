@@ -20,6 +20,10 @@ class IPCReceiver:
             except ipc.BusyError as e:
                 print("ipchelper:", e)
                 break
+            except ipc.Error:
+                print("error: ")
+            except Exception as e:
+                print("ipchelper: ", e)
 
     def cleanup(self):
         if self.queue:
