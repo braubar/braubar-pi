@@ -6,6 +6,7 @@ import argparse
 import signal
 import sys
 import requests
+import time
 
 os.system("export PYTHONPATH=/home/pi/braubar-pi-master/braubar/service")
 
@@ -15,6 +16,7 @@ if os.getcwd().endswith("bin"):
 else:
     raise Exception("please start braubar from bin directory!!")
 import brewdaemon
+
 from service.brewconfig import BrewConfig
 
 SENSOR_PORT = BrewConfig().get("braubar")["sensor_port"]
@@ -34,7 +36,7 @@ while True:
         pass
     except requests.exceptions.Timeout:
         pass
-
+    time.sleep(1)
 
 brew_daemon = brewdaemon.BrewDaemon()
 
