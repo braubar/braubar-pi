@@ -1,6 +1,9 @@
 import socket
 import random
 import time
+import os
+import atexit
+import signal
 
 UDP_IP = "0.0.0.0"
 UDP_PORT = 50505
@@ -30,7 +33,7 @@ class SensorDummy():
                              socket.SOCK_DGRAM)  # UDP
         sock.sendto(message, (UDP_IP, UDP_PORT))
 
-        print(message)
+#        print(message)
 
     def run(self, sensor_id=99, temp=20.1):
         self.send(sensor_id=sensor_id, temp=temp)
@@ -38,8 +41,13 @@ class SensorDummy():
 
 sensor = SensorDummy()
 
+count = 0
+
 while True:
     sensor_id = random.randint(10, 15)
     temp = round(random.uniform(30, 52), 2)
     sensor.run(sensor_id=sensor_id, temp=temp)
-    time.sleep(0.1)
+    count += 1
+    if count % 1000 == 0:
+        print("count: ", count)
+    time.sleep(0)
