@@ -1,6 +1,6 @@
 {
  "powerstrip": {
-  "url": "http://powerstrip.braubar:8080/",
+  "url": "http://powerstrip:8080/",
   "password": "braubar"
  },
  "braubar": {
