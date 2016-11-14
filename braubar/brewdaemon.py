@@ -106,7 +106,7 @@ class BrewDaemon:
                     print("temp_current", temp_current, "outout", output, "state_temp", self.state_params["temp"],
                           "timer_passed", timer_passed_checked)
 
-                    if self.state_params["auto"] == True and self.state_params[
+                    if self.state_params["auto"] is True and self.state_params[
                         "temp"] - TEMP_TOLERANCE <= temp_current:
                         if self.brew_timer is None:
                             print("Start BrewTimer for ", self.simplestate.state, "and", self.state_params["time"],
