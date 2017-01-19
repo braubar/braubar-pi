@@ -1,7 +1,7 @@
 {
   "maischen": {
     "name": "Einmaischen",
-    "temp": 50.0,
+    "temp": 47.0,
     "time": 0,
     "auto": false
   },
@@ -21,18 +21,18 @@
     "name": "alpha-Amylase",
     "temp": 71.0,
     "time": 1500,
-    "auto": false
+    "auto": true
   },
   "laeutern": {
     "name": "Laeutern",
-    "temp": 78.0,
+    "temp": 79.5,
     "time": 0,
     "auto": false
   },
   "kochen": {
     "name": "Kochen",
-    "temp": 110.0,
-    "time": 5400,
+    "temp": 100.0,
+    "time": 4500,
     "auto": true
   },
   "vorkochen": {
