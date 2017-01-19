@@ -99,7 +99,6 @@ def temp():
 @app.route('/chart/data')
 def chart_data():
     a = cs.brew_chart(brew_id=brew_id)
-    print(a)
     return a
 
 
