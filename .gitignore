@@ -10,3 +10,4 @@ next_state.brew
 temp.brew
 *~
 *.err*
+*.db-journal
