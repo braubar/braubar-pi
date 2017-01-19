@@ -3,7 +3,7 @@ import sqlite3
 import json
 import math
 
-TOLERANCE = 0.01
+TOLERANCE = 0.1
 
 
 class ChartService:
