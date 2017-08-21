@@ -2,11 +2,13 @@
 import json
 import posix_ipc as ipc
 
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 from flask_socketio import SocketIO, send, emit
+
 from service.chartService import ChartService
 from service.brewconfig import BrewConfig
 from service.ipchelper import prepare_data, TYPE_CONTROL, CONTROL_NEXT
+from service.powerstrip import PowerStrip
 
 __author__ = 'oli@fesseler.info'
 __version__ = ('0', '0', '1')
@@ -17,15 +19,27 @@ app.config['SECRET_KEY'] = 'secret!braubar!mhh!BIER!'
 socketio = SocketIO(app, async_mode='eventlet')
 thread = None
 cs = ChartService()
-
+bc = BrewConfig()
+ps = PowerStrip()
 
 @app.route('/')
 def index():
+    return render_template('index.html',
+                           brew_id=brew_id,
+                           powerstrip_url=bc.get("powerstrip")["url"],
+                           powerstrip_ok=ps.check(),
+                           sensor_port=bc.get("braubar")["sensor_port"],
+                           last_brew_id=cs.get_last_brew_id())
+
+
+@app.route('/brewboard')
+def brewboard():
+    print(request)
     recipe_file = open(BrewConfig.RECIPE_FILE)
     recipe = json.load(recipe_file)
     print(cs.status(brew_id))
     print(recipe)
-    return render_template('index.html',
+    return render_template('brew.html',
                            brew_id=brew_id,
                            brew_state=cs.status(brew_id),
                            brew_recipe=recipe)

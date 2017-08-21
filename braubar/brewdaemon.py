@@ -14,7 +14,7 @@ from service.brewlog import BrewLog
 from service.brewconfig import BrewConfig
 from service.heatservice import HeatService
 from service.ipchelper import IPCReceiver, TYPE_TEMP, TYPE_CONTROL
-
+from service.ipchelper import ipc
 WAIT_THREAD_TIMEOUT = 0.05
 WAIT_THREAD_NAME = "Thread_wait_temp"
 HOST_IP = '0.0.0.0'
@@ -45,15 +45,16 @@ class BrewDaemon:
 
     def __init__(self):
         self.config = BrewConfig()
+        self.receiver = IPCReceiver(BrewConfig.BRAUBAR_QUEUE)
         self.powerstrip = PowerStrip(self.config.get("powerstrip")["url"])
         self.powerstrip.all_off()
         self.heatservice = HeatService()
         self.simplestate = SimpleState()
-        self.brew_id = int(round(time.time() * 1000))
+        self.brew_id = log.get_last_brew_id()
         print("Brew ID:", self.brew_id)
         self.init_pid()
-        self.receiver = IPCReceiver(BrewConfig.BRAUBAR_QUEUE)
-        print("opened message queue", self.receiver.name)
+        print("opened message queue: ", self.receiver.name)
+        signal.signal(signal.SIGALRM, self.msg_handler)
 
     def init_pid(self):
         self.pid = Pid(BrewConfig.P, BrewConfig.I, BrewConfig.D)
@@ -61,71 +62,75 @@ class BrewDaemon:
         self.pid.set_sample_time(1000.0)
         self.pid.set_output_limits(BrewConfig.MIN, BrewConfig.MAX)
 
+    def msg_handler(self, a, b):
+        print("========= got message", a, b)
+
     def run(self):
         self.state_params = self.simplestate.start()
         self.pid.set_setpoint(self.state_params["temp"])
 
+        old_calculation_time = None
         try:
-            old_calculation_time = None
             while True:
+                try:
+                    #time.sleep(2)
+                    msg_type, msg = self.receiver.receive()
+                    print("msg_type: ", msg_type)
+                    print("msg: ", msg)
+                    if msg_type == TYPE_TEMP:
+                        # TODO sollte vielleicht als eigener thread laufen..
+                        # oder mit einer fifo queue.... damit nix schief geht. ipc pufert ja auch schon
 
-                msg_type, msg = self.receiver.receive()
-                print("msg_type", msg_type)
-                print("msg", msg)
-                if msg_type == TYPE_TEMP:
-                    # TODO sollte vielleicht als eigener thread laufen..
-                    # oder mit einer fifo queue.... damit nix schief geht. ipc pufert ja auch schon
+                        temp_current, sensor_id = self.convert_temp(msg)
 
-                    temp_current, sensor_id = self.convert_temp(msg)
+                        # computes timedelta for pid
+                        calculation_time = int(round(time.time() * 1000))
+                        if old_calculation_time:
+                            self.pid.set_sample_time(calculation_time - old_calculation_time)
+                        old_calculation_time = calculation_time
 
-                    # computes timedelta for pid
-                    calculation_time = int(round(time.time() * 1000))
-                    if old_calculation_time:
-                        self.pid.set_sample_time(calculation_time - old_calculation_time)
-                    old_calculation_time = calculation_time
+                        # calculates PID output value
+                        output = self.pid.compute(temp_current)
 
-                    # calculates PID output value
-                    output = self.pid.compute(temp_current)
+                        # switches powerstrip based on output value
+                        self.heatservice.temp_actor(output)
 
-                    # switches powerstrip based on output value
-                    self.heatservice.temp_actor(output)
+                        logging.warning(
+                            {"temp_actual": temp_current, "change": output, "state": self.state_params,
+                             "sensor": sensor_id})
 
-                    logging.warning(
-                        {"temp_actual": temp_current, "change": output, "state": self.state_params,
-                         "sensor": sensor_id})
+                        timer_passed_checked = 0.0
+                        if self.brew_timer is not None:
+                            timer_passed_checked = self.brew_timer.passed()
+                            log.log(temp_current, self.state_params["temp"], output, sensor_id, self.simplestate.state,
+                                    self.brew_id, int(self.brew_timer.passed()))
+                        else:
+                            log.log(temp_current, self.state_params["temp"], output, sensor_id, self.simplestate.state,
+                                    self.brew_id)
 
-                    timer_passed_checked = 0.0
-                    if self.brew_timer is not None:
-                        timer_passed_checked = self.brew_timer.passed()
-                        log.log(temp_current, self.state_params["temp"], output, sensor_id, self.simplestate.state,
-                                self.brew_id, int(self.brew_timer.passed()))
-                    else:
-                        log.log(temp_current, self.state_params["temp"], output, sensor_id, self.simplestate.state,
-                                self.brew_id)
+                        print("temp_current", temp_current, "outout", output, "state_temp", self.state_params["temp"],
+                              "timer_passed", timer_passed_checked)
 
-                    print("temp_current", temp_current, "outout", output, "state_temp", self.state_params["temp"],
-                          "timer_passed", timer_passed_checked)
-
-                    if self.state_params["auto"] is True and self.state_params[
-                        "temp"] - TEMP_TOLERANCE <= temp_current:
-                        if self.brew_timer is None:
-                            print("Start BrewTimer for ", self.simplestate.state, "and", self.state_params["time"],
-                                  "seconds")
-                            self.brew_timer = BrewTimer(self.state_params["time"], self.next_state)
-                            self.brew_timer.start()
-                elif msg_type == TYPE_CONTROL:
-                    if self.brew_timer:
-                        self.brew_timer.cancel()
-                    self.next_state()
-        except Exception as e:
-            print("uuiiii: ", e)
-        except ipc.ExistentialError:
-            queue.close()
-            return False
-        except ipc.BusyError:
-            print("socket busy")
-            queue.close()
-            return False
+                        if self.state_params["auto"] is True and self.state_params[
+                            "temp"] - TEMP_TOLERANCE <= temp_current:
+                            if self.brew_timer is None:
+                                print("Start BrewTimer for ", self.simplestate.state, "and", self.state_params["time"],
+                                      "seconds")
+                                self.brew_timer = BrewTimer(self.state_params["time"], self.next_state)
+                                self.brew_timer.start()
+                    elif msg_type == TYPE_CONTROL:
+                        if self.brew_timer:
+                            self.brew_timer.cancel()
+                        self.next_state()
+                except ipc.ExistentialError:
+                    self.receiver.close()
+                    return False
+                except ipc.BusyError:
+                    print("socket busy")
+                    self.receiver.close()
+                    return False
+                except Exception as e:
+                    print("brewdaemon-run: ", e)
         finally:
             self.receiver.cleanup()
 

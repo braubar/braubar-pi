@@ -15,7 +15,10 @@ class HeatService:
         """
 
 
-        status = PowerStrip().fetch_status()
+        status, ok = PowerStrip().fetch_status()
+        if ok is not None:
+            print("powerstrip status not ok: ", ok)
+            raise PowerstripException("asd") from BaseException
         if pid_output > 0.0 and status.get(PowerStrip.PLUG_1) == PowerStrip.OFF:
             actor = HeatService.DEFAULT_TIME * (pid_output / BrewConfig.MAX)
             print("powerstrip on ", pid_output, "for", actor, "sec.")
@@ -55,3 +58,7 @@ class HeatService:
         if self.bt:
             return self.bt.remaining()
         return False
+
+
+class PowerstripException(Exception):
+    pass

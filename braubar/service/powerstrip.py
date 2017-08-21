@@ -34,8 +34,11 @@ class PowerStrip:
         self.status = self.login(password)
 
     def login(self, password):
-        values = {"pw": password}
-        return self.request(referrer="login.html", values=values)
+        values = '{"pw": password}'
+        resp, ok = self.request(referrer="login.html", values=values)
+        if ok is not None:
+            return None, "couldn't log in"
+        return resp, None
 
     def logout(self):
         values = {}
@@ -44,16 +47,29 @@ class PowerStrip:
 
     def switch(self, plug, value):
         values = {plug: value}
-        self.status = self.request(values=values)
+        self.status, ok = self.request(values=values)
         return self.status
 
     def request(self, referrer='', values=''):
         url = self.url + referrer
+        r = requests.Response
+        ok = "Something went wrong"
         try:
             r = requests.post(url, data=values, timeout=10.0)
-        except RuntimeError:
-            print("not able to reach powerstrip")
-        return self.parse_response(r.text)
+            r = self.parse_response(r.text)
+            ok = None
+        except requests.ConnectionError as err:
+            r = err.response
+            logging.error("PowerStrip ConnectionError: %s", str(err))
+            ok = 'ConnectionError'
+        finally:
+            return r, ok
+
+    def check(self):
+        r, ok = self.login(self.password)
+        if ok is None:
+            return True
+        return False
 
     def parse_response(self, response_data):
         soup = BeautifulSoup(response_data, 'html.parser')
@@ -61,7 +77,7 @@ class PowerStrip:
         if soup.script.string[:8] == 'function':
             print("logged out")
         if soup.script.string[4:14] == 'sockstates':
-            soup.script.string[17:26]
+            # soup.script.string[17:26]
             status[PowerStrip.PLUG_1] = int(soup.script.string[18])
             status[PowerStrip.PLUG_2] = int(soup.script.string[20])
             status[PowerStrip.PLUG_3] = int(soup.script.string[22])

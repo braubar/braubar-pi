@@ -4,11 +4,11 @@ import json
 import math
 
 TOLERANCE = 0.1
-
+DBNAME = 'brew.db'
 
 class ChartService:
     def last_row(self, brew_id=None):
-        conn = sqlite3.connect('brew.db')
+        conn = sqlite3.connect(DBNAME)
         db = conn.cursor()
         stmt_args = []
         if brew_id:
@@ -37,7 +37,7 @@ class ChartService:
         }
 
     def last_row2(self, brew_id=None):
-        conn = sqlite3.connect('brew.db')
+        conn = sqlite3.connect(DBNAME)
         db = conn.cursor()
         stmt_args = []
         if brew_id:
@@ -67,7 +67,7 @@ class ChartService:
         }
 
     def brew_chart(self, brew_id=None):
-        conn = sqlite3.connect('brew.db')
+        conn = sqlite3.connect(DBNAME)
         db = conn.cursor()
         stmt_args = []
         if brew_id:
@@ -149,7 +149,7 @@ class ChartService:
         return round(y_now - y_before, 2)
 
     def select(self, stmt, stmt_args):
-        conn = sqlite3.connect('brew.db')
+        conn = sqlite3.connect(DBNAME)
         db = conn.cursor()
         db.execute(stmt, stmt_args)
         data = db.fetchall()
@@ -193,3 +193,11 @@ class ChartService:
 
     def calc_pid_output_for_chart(self, output):
         return output / 1000 / 2 + 50
+
+    def get_last_brew_id(self):
+        stmt_args = []
+        stmt = '''select brew_id from brewlog order by brew_id DESC LIMIT 1'''
+        data = self.select(stmt, stmt_args)
+        if data is not None and len(data) is not 0:
+            return data[0][0]
+        return 1

@@ -86,7 +86,7 @@ class SimpleState:
 
     def pause(self, x):
         self.state = self.PAUSE
-        print("pause")
+        print("State: pause")
         return self.recipe[self.state]
 
     def next(self):

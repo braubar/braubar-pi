@@ -50,4 +50,4 @@ while True:
     count += 1
     if count % 1000 == 0:
         print("count: ", count)
-    time.sleep(0)
+    time.sleep(0.5)

@@ -12,8 +12,27 @@ class BrewLog:
     db = None
 
     def __init__(self):
-        self.conn = sqlite3.connect('brew.db')
+        db_name = 'brew.db'
+        self.conn = sqlite3.connect(db_name)
         self.db = self.conn.cursor()
+        if not self.check_table_exists("brewlog"):
+            self.create_table()
+
+    def check_table_exists(self, name):
+        self.db.execute(
+            '''SELECT name
+                FROM sqlite_master
+                WHERE type = 'table'
+                AND name = ?;
+            ''',
+            [name]
+        )
+        data = self.db.fetchall()
+        if len(data) is 0:
+            return False
+        if data[0][0] == name:
+            return True
+
 
     def log(self, current_temp, target_temp, change, sensor_id, current_state, brew_id, timer_passed=0):
         brew_time = datetime.now().isoformat()
@@ -76,6 +95,21 @@ class BrewLog:
             self.shutdown()
         finally:
             pass
+
+    def get_last_brew_id(self):
+        stmt_args = []
+        stmt = '''select brew_id from brewlog order by brew_id DESC LIMIT 1'''
+        data = None
+        try:
+            self.db.execute(stmt, stmt_args)
+            data = self.db.fetchall()
+        except sqlite3.Error as e:
+            print("An DB error occurred:", e.args[0])
+            self.shutdown()
+
+        if data is not None and len(data) is not 0:
+            return data[0][0]
+        return 1
 
 
 class BrewLogDAO:

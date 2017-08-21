@@ -16,27 +16,30 @@ if os.getcwd().endswith("bin"):
 else:
     raise Exception("please start braubar from bin directory!!")
 import brewdaemon
-
 from service.brewconfig import BrewConfig
 
 SENSOR_PORT = BrewConfig().get("braubar")["sensor_port"]
 POWERSTRIP_URL = BrewConfig().get('powerstrip')['url']
+
+
+def power_strip_check():
+    while True:
+        try:
+            if requests.get(POWERSTRIP_URL, timeout=1.0).status_code == 200:
+                break
+        except requests.exceptions.ConnectionError:
+            pass
+        except requests.exceptions.Timeout:
+            pass
+        print("retry to establish powerstrip connection")
+        time.sleep(1)
+
 
 parser = argparse.ArgumentParser(description="BrauBar daemon at your service.")
 parser.add_argument('--host', help="IP-Address to listen on. Default is 0.0.0.0", default="0.0.0.0")
 args = parser.parse_args()
 HOST_IP = args.host
 
-while True:
-    print("retry to establish powerstrip connection")
-    try:
-        if requests.get(POWERSTRIP_URL, timeout=1.0).status_code == 200:
-            break
-    except requests.exceptions.ConnectionError:
-        pass
-    except requests.exceptions.Timeout:
-        pass
-    time.sleep(1)
 
 brew_daemon = brewdaemon.BrewDaemon()
 
@@ -47,7 +50,8 @@ os.setpgrp()
 
 try:
     brew_daemon.start_sensor_server(host=HOST_IP, port=SENSOR_PORT)
-    brew_daemon.start_flask(host=HOST_IP, brew_id=brew_daemon.brew_id)
+    brew_daemon.start_flask(host=HOST_IP)
+    power_strip_check()
     brew_daemon.run()
 except KeyboardInterrupt:
     print("BrewDaemon is shutting down ...")
@@ -56,4 +60,5 @@ finally:
     # os.killpg(0, signal.SIGTERM)
 print("bye")
 
-b = brewdaemon.BrewDaemon()
+
+
