@@ -1,8 +1,6 @@
 import requests
 import logging
 
-import time
-from service.brewconfig import BrewConfig
 from bs4 import BeautifulSoup
 
 from service.brewconfig import BrewConfig

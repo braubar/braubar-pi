@@ -27,9 +27,11 @@ def power_strip_check():
         try:
             if requests.get(POWERSTRIP_URL, timeout=1.0).status_code == 200:
                 break
-        except requests.exceptions.ConnectionError:
+        except requests.exceptions.ConnectionError as con_err:
+            print(con_err)
             pass
-        except requests.exceptions.Timeout:
+        except requests.exceptions.Timeout as timeout:
+            print(timeout)
             pass
         print("retry to establish powerstrip connection")
         time.sleep(1)

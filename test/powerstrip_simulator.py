@@ -20,7 +20,7 @@ class PowerstripRequestHandler(http.server.BaseHTTPRequestHandler):
 
 
 def run():
-    server_address = ("powerstrip", 8080)
+    server_address = ("0.0.0.0", 8080)
     http_server = http.server.HTTPServer(server_address, PowerstripRequestHandler)
     http_server.server_port = 8080
     http_server.serve_forever()
