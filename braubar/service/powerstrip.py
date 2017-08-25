@@ -23,7 +23,7 @@ class PowerStrip:
         PLUG_4: 0
     }
 
-    def __init__(self, url=None, password='braubar'):
+    def __init__(self, url=None, password='1'):
         if url:
             self.url = url
         else:

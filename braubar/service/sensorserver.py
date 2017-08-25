@@ -56,5 +56,6 @@ class SensorServer:
 
 
 if __name__ == "__main__":
+    TEMP_RAW_FILE = "temp.brew"
     server = SensorServer()
     server.start()
