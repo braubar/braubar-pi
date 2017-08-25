@@ -6,5 +6,11 @@
  "braubar": {
   "version": "0.1.0",
   "sensor_port": 50505
- }
+ },
+ "sensors": [
+  {
+   "name": "maische",
+   "uri": "sys/bus/w1/devices/28-000005e2fdc3/w1_slave"
+  }
+ ]
 }
