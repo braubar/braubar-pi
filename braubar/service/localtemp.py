@@ -1,17 +1,17 @@
 import os
 import asyncio
-
-#FILE='sys/bus/w1/devices/' #28-000005e2fdc3/w1_slave'
-SENSORS=['test/devices/28-1/w1_slave.txt', 'test/devices/28-2/w1_slave.txt']
+from brewconfig import BrewConfig
+import posix_ipc as ipc
+from ipchelper import prepare_data, TYPE_TEMP
+import json
 
 class Pi_Sensor:
-    
-    sensor_array = []
 
     def __init__(self, sensors):
-        for sensor in sensors: 
-            self.sensor_array.append((sensor,self.read_sensor_values(sensor)))
-        print(self.sensor_array)
+        sensors_count = len(sensors)
+        for sensor in sensors:
+            ok, temp = self.read_sensor_values(sensor["uri"])
+            self.write_to_queue(temp, sensor["name"])
         loop.stop()
 
     def read_sensor_values(self, sensor_uri):
@@ -28,22 +28,53 @@ class Pi_Sensor:
         temp = int(temp_str.split()[-1][2:])/1000
         return temp
 
-    def get_sensors_count(self):
-        return len(self.sensor_array)
+    def write_to_queue(self, temp, sensor_id):
+        message_count = 0
+        current_messages = 0
+        queue = None
+        try:
+            queue = ipc.MessageQueue(name=BrewConfig.BRAUBAR_QUEUE, flags=ipc.O_CREAT)
+            content = json.dumps({"temp": temp, "id": sensor_id})
+            queue.send(prepare_data(TYPE_TEMP, content).encode(encoding=BrewConfig.QUEUE_ENCODING), timeout=5)
+            current_messages = queue.current_messages
+            message_count += 1
+            print("current messages: ", queue.current_messages,
+                  "max_messages: ", queue.max_messages,
+                  "max_message_size", queue.max_message_size)
+
+        except ipc.ExistentialError:
+            return False
+        except ipc.BusyError as bse:
+            print("socket busy Error: Queue reached limit", bse)
+            return False
+        except OSError as ose:
+            print("OSERROR: ",ose)
+            print("current_messages: ", current_messages)
+        finally:
+            if queue is not None:
+                queue.close()
+
+        return True
 
 class Sensor_Runner:
 
-    def __init__(self, loop):
+    def __init__(self, loop, sensors):
         while(True):
             try:
-                Pi_Sensor(SENSORS)
+                Pi_Sensor(sensors)
             except Exception as err:
+                print(sensors)
                 print("Sensor_Runner:", err)
         loop.stop()
 
 if __name__ == "__main__":
+    config = BrewConfig()
+    sensors_config = config.get("sensors")
     loop = asyncio.get_event_loop()
-    loop.call_soon(Sensor_Runner, loop)
-    loop.run_forever()
-    loop.close()
-
+    try:
+        loop.call_soon(Sensor_Runner, loop, sensors_config)
+        loop.run_forever()
+    except:
+        pass
+    finally:
+        loop.close()
