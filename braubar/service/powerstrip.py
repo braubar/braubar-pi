@@ -31,6 +31,9 @@ class PowerStrip:
         self.password = password
         self.status = self.login(password)
 
+    def get_url(self):
+        return self.url
+
     def login(self, password):
         values = '{"pw": password}'
         resp, ok = self.request(referrer="login.html", values=values)

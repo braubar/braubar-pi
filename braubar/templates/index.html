@@ -40,13 +40,14 @@
         </div>
         <div>Sensor: {{sensor_port}}</div>
         <div>Last Brew Id: {{last_brew_id}}</div>
-        <div>New Brew ID : {{last_brew_id+1}}<input type="number" id="brew_id_field"></div>
+        <!--<div>New Brew ID : {{last_brew_id+1}}<input type="number" id="brew_id_field"></div>-->
 
 
     </div>
     <div>
-        <form action="brewboard">
-            <input type="submit" class="btn btn-success" value="Start">
+        <form action="brewboard" method="POST">
+            <div>New Brew ID : {{last_brew_id+1}}<input type="number" id="brew_id_field" name="brew_id"></div>
+            <input type="submit" class="btn btn-success" value="Start" id="brew_form_submit">
         </form>
     </div>
 </div>
@@ -58,6 +59,6 @@
 <script src="/static/js/bootstrap.min.js"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 <script src="/static/js/ie10-viewport-bug-workaround.js"></script>
-<script src="/static/js/BrewBoard.js"></script>
+<!--<script src="/static/js/BrewBoard.js"></script>-->
 </body>
 </html>

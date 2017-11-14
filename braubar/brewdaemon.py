@@ -24,7 +24,7 @@ NEXT_STATE_FILE = "../data/next_state.brew"
 LOG_BASE = "../log/brewlog_"
 TEMP_RAW_FILE = "../data/temp.brew"
 FLASK_FILE = "../braubar/flask_app.py"
-SENSOR_SERVER_FILE = "../braubar/service/sensorserver.py"
+SENSOR_SERVER_FILE = "../braubar/service/localtemp.py"
 
 logfile = LOG_BASE + time.strftime("%d-%m-%Y_%H-%M-%S", time.localtime()) + ".log"
 log = BrewLog()
@@ -50,8 +50,6 @@ class BrewDaemon:
         self.powerstrip.all_off()
         self.heatservice = HeatService()
         self.simplestate = SimpleState()
-        self.brew_id = log.get_last_brew_id()
-        print("Brew ID:", self.brew_id)
         self.init_pid()
         print("opened message queue: ", self.receiver.name)
         signal.signal(signal.SIGALRM, self.msg_handler)
@@ -65,7 +63,8 @@ class BrewDaemon:
     def msg_handler(self, a, b):
         print("========= got message", a, b)
 
-    def run(self):
+    def run(self, brew_id):
+        print("running brew job:", brew_id)
         self.state_params = self.simplestate.start()
         self.pid.set_setpoint(self.state_params["temp"])
 
@@ -73,7 +72,6 @@ class BrewDaemon:
         try:
             while True:
                 try:
-                    #time.sleep(2)
                     msg_type, msg = self.receiver.receive()
                     print("msg_type: ", msg_type)
                     print("msg: ", msg)
@@ -187,13 +185,16 @@ if __name__ == "__main__":
 
     HOST_IP = args.host
 
-    try:
-        brew_daemon.start_sensor_server(host=HOST_IP, port=SENSOR_PORT)
-        brew_daemon.start_flask(host=HOST_IP, brew_id=brew_daemon.brew_id)
-        brew_daemon.run()
-    except KeyboardInterrupt:
-        print("BrewDaemon is shutting down ...")
-    finally:
-        brew_daemon.shutdown()
-        # os.killpg(0, signal.SIGTERM)
+    brew_daemon.run()
+
+    # try:
+    #     brew_daemon.start_sensor_server(host=HOST_IP, port=SENSOR_PORT)
+    #     brew_daemon.start_flask(host=HOST_IP, brew_id=brew_daemon.brew_id)
+    #     brew_daemon.run()
+    # except KeyboardInterrupt:
+    #     print("BrewDaemon is shutting down ...")
+    # finally:
+    #     brew_daemon.shutdown()
+    #      os.killpg(0, signal.SIGTERM)
+
     print("bye")

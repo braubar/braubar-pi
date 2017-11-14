@@ -6,6 +6,7 @@ TYPE_TEMP = "temp"
 TYPE_CONTROL = "control"
 CONTROL_NEXT = "next"
 CONTROL_START = "start"
+CONTROL_STOP = "stop"
 QUEUE_ENCODING = "utf-8"
 
 

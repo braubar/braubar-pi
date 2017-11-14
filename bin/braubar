@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 
 import os
-import atexit
 import argparse
-import signal
 import sys
-import requests
-import time
+import subprocess
 
 os.system("export PYTHONPATH=/home/pi/braubar-pi-master/braubar/service")
 
@@ -15,52 +12,31 @@ if os.getcwd().endswith("bin"):
     sys.path.append("../braubar/service")
 else:
     raise Exception("please start braubar from bin directory!!")
-import brewdaemon
 from service.brewconfig import BrewConfig
 
 SENSOR_PORT = BrewConfig().get("braubar")["sensor_port"]
 POWERSTRIP_URL = BrewConfig().get('powerstrip')['url']
 
-
-def power_strip_check():
-    while True:
-        try:
-            if requests.get(POWERSTRIP_URL, timeout=1.0).status_code == 200:
-                break
-        except requests.exceptions.ConnectionError as con_err:
-            print(con_err)
-            pass
-        except requests.exceptions.Timeout as timeout:
-            print(timeout)
-            pass
-        print("retry to establish powerstrip connection")
-        time.sleep(1)
-
-
 parser = argparse.ArgumentParser(description="BrauBar daemon at your service.")
 parser.add_argument('--host', help="IP-Address to listen on. Default is 0.0.0.0", default="0.0.0.0")
+parser.add_argument('--powerstrip', help="URL for Powerstrip. Format:e.g. 'http://localhost:8080'", default=POWERSTRIP_URL)
 args = parser.parse_args()
 HOST_IP = args.host
+FLASK_FILE = "../braubar/flask_app.py"
+BREWDAEMON_FILE = "../braubar/brewdaemon"
+powerstrip_url = args.powerstrip
 
 
-brew_daemon = brewdaemon.BrewDaemon()
-
-atexit.register(os.killpg, 0, signal.SIGTERM)
-atexit.register(brew_daemon.shutdown)
-
-os.setpgrp()
+def start_flask(host=HOST_IP, brew_id=None):
+    flask_args = ["python3", FLASK_FILE, "--host", host]
+    if brew_id:
+        flask_args.append("--id")
+        flask_args.append(str(brew_id))
+    subprocess.Popen(flask_args)
 
 try:
-    brew_daemon.start_sensor_server(host=HOST_IP, port=SENSOR_PORT)
-    brew_daemon.start_flask(host=HOST_IP)
-    power_strip_check()
-    brew_daemon.run()
+    start_flask(host=HOST_IP)
 except KeyboardInterrupt:
     print("BrewDaemon is shutting down ...")
-finally:
-    brew_daemon.shutdown()
-    # os.killpg(0, signal.SIGTERM)
+
 print("bye")
-
-
-
