@@ -63,6 +63,9 @@ class PowerStrip:
             r = err.response
             logging.error("PowerStrip ConnectionError: %s", str(err))
             ok = 'ConnectionError'
+        except Exception as err:
+            logging.error("Powerstrip Exception", str(err))
+            ok = "Exception"
         finally:
             return r, ok
 
