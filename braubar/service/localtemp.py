@@ -1,5 +1,7 @@
 import os
 import asyncio
+
+import time
 from brewconfig import BrewConfig
 import posix_ipc as ipc
 from ipchelper import prepare_data, TYPE_TEMP
@@ -12,6 +14,8 @@ class Pi_Sensor:
         for sensor in sensors:
             ok, temp = self.read_sensor_values(sensor["uri"])
             self.write_to_queue(temp, sensor["name"])
+            # TODO remove sleep
+            time.sleep(1.)
         loop.stop()
 
     def read_sensor_values(self, sensor_uri):
@@ -38,9 +42,9 @@ class Pi_Sensor:
             queue.send(prepare_data(TYPE_TEMP, content).encode(encoding=BrewConfig.QUEUE_ENCODING), timeout=5)
             current_messages = queue.current_messages
             message_count += 1
-            #print("current messages: ", queue.current_messages,
-            #      "max_messages: ", queue.max_messages,
-            #      "max_message_size", queue.max_message_size)
+            print("current messages: ", queue.current_messages,
+                  "max_messages: ", queue.max_messages,
+                  "max_message_size", queue.max_message_size)
 
         except ipc.ExistentialError:
             return False

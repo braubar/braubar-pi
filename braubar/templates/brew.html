@@ -40,7 +40,11 @@
     <div class="row footer">
         <div class="footer-values col-sm-2">
             <div class="footer-labels" id="timer_label">Timer:</div>
-            <div class="footer-values" id="timer_value">{{ (brew_recipe[brew_state.current_state].time - brew_state.timer_passed)/60 }}</div>
+            <div class="footer-values" id="timer_value">
+                {% if brew_state.ok == True %}
+                {{ (brew_recipe[brew_state.current_state].time - brew_state.timer_passed)/60 }}
+                {% endif %}
+            </div>
         </div>
         {% for name in brew_recipe %}
             <div class="footer-values col-sm-2">

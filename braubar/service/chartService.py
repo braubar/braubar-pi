@@ -33,7 +33,8 @@ class ChartService:
             "sensor_id": data[4],
             "current_state": data[5],
             "brew_id": data[6],
-            "timer_passed": data[7]
+            "timer_passed": data[7],
+            "brew_start": data[8]
         }
 
     def last_row2(self, brew_id=None):
@@ -100,7 +101,8 @@ class ChartService:
                     "change": self.calc_pid_output_for_chart(change),
                     "sensor_id": row[4],
                     "current_state": row[5],
-                    "brew_id": row[6]
+                    "brew_id": row[6],
+                    "brew_start": row[7]
                 }
                 result.append(r)
                 count += 1
@@ -119,12 +121,17 @@ class ChartService:
         return json.dumps({"status": 501})
 
     def status(self, brew_id):
-        status = self.last_row(brew_id)
-        brew_time = datetime.datetime.strptime(status["brew_time"], "%Y-%m-%dT%H:%M:%S.%f")
-        brew_start = datetime.datetime.fromtimestamp(status["brew_id"]/1000.0)
-        duration = (brew_time - brew_start)
-        status["duration"] = str(duration).split(".")[0]
-        status["temp_increase"] = self.temp_increase(brew_id)
+        status = {"ok": False}
+        try:
+            status = self.last_row(brew_id)
+            brew_time = datetime.datetime.strptime(status["brew_time"], "%Y-%m-%dT%H:%M:%S.%f")
+            brew_start = datetime.datetime.strptime(status["brew_start"], "%Y-%m-%dT%H:%M:%S.%f")
+            duration = (brew_time - brew_start)
+            status["duration"] = str(duration).split(".")[0]
+            status["temp_increase"] = self.temp_increase(brew_id)
+            status["ok"] = True
+        except Exception as e:
+            print(e)
         return status
 
 
@@ -198,6 +205,6 @@ class ChartService:
         stmt_args = []
         stmt = '''select brew_id from brewlog order by brew_id DESC LIMIT 1'''
         data = self.select(stmt, stmt_args)
-        if data is not None and len(data) is not 0:
+        if data is not None and len(data) is not 0 and data[0][0] is not None:
             return data[0][0]
         return 1

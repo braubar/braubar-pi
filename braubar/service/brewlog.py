@@ -33,13 +33,12 @@ class BrewLog:
         if data[0][0] == name:
             return True
 
-
-    def log(self, current_temp, target_temp, change, sensor_id, current_state, brew_id, timer_passed=0):
+    def log(self, current_temp, target_temp, change, sensor_id, current_state, brew_id, brew_start, timer_passed=0):
         brew_time = datetime.now().isoformat()
         try:
             self.db.execute(
                     '''INSERT INTO brewlog
-                        VALUES (?,?,?,?,?,?,?,?)
+                        VALUES (?,?,?,?,?,?,?,?,?)
                         ''', (brew_time,
                               current_temp,
                               target_temp,
@@ -47,7 +46,8 @@ class BrewLog:
                               sensor_id,
                               current_state,
                               brew_id,
-                              timer_passed))
+                              timer_passed,
+                              brew_start))
             self.conn.commit()
 
         except sqlite3.Error as e:
@@ -87,7 +87,8 @@ class BrewLog:
                     sensor_id INT,
                     current_state TEXT,
                     brew_id INT,
-                    timer_passed INT
+                    timer_passed INT, 
+                    brew_start DATETIME NOT NULL
                 )
             ''')
         except sqlite3.Error as e:

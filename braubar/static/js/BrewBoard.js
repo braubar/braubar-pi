@@ -24,7 +24,7 @@ $(document).ready(function () {
 
 function startBrewing() {
     brew_id = $("brew_id_field").text
-    $.post("brewboard/"+brew_id)
+    $.post("start/"+brew_id)
         .done(function( data ) {
                 alert( "Data Loaded: " + data );
         });

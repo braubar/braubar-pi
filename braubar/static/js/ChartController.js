@@ -8,9 +8,11 @@ $(document).ready(function () {
             console.log("disconnected")
         })
     });
+
     socket.on('fullchart', function (data) {
         chart = InitChart(JSON.parse(data));
     });
+
     socket.on('update chart', function (dat) {
         data = JSON.parse(dat);
         // console.log(dat)

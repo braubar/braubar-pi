@@ -6,10 +6,12 @@ import subprocess
 from flask import Flask, jsonify, render_template, request
 from flask_socketio import SocketIO, send, emit
 
+from service.brewlog import BrewLog
 from service.chartService import ChartService
 from service.brewconfig import BrewConfig
 from service.ipchelper import prepare_data, TYPE_CONTROL, CONTROL_NEXT
 from service.powerstrip import PowerStrip
+#from brewdaemon import BrewDaemon
 
 __author__ = 'oli@fesseler.info'
 __version__ = ('0', '0', '1')
@@ -22,10 +24,11 @@ thread = None
 cs = None
 bc = None
 ps = None
-bd = None
+#bd = BrewDaemon()
+log = BrewLog()
 
 POWERSTRIP_URL = BrewConfig().get('powerstrip')['url']
-BREWDAEMON_FILE = "../braubar/brewdaemon"
+BREWDAEMON_FILE = "brewdaemon.py"
 
 
 @app.route('/')
@@ -41,14 +44,12 @@ def index():
 @app.route('/brewboard', methods=["POST"])
 def brewboard():
     print(request)
-    form = request
     brew_id = request.values["brew_id"]
     # TODO: brewdaemon run
     start_brewdaemon(brew_id)
     recipe_file = open(BrewConfig.RECIPE_FILE)
     recipe = json.load(recipe_file)
     print(recipe)
-    bd.run(id)
     return render_template('brew.html',
                            brew_id=brew_id,
                            brew_state=cs.status(brew_id),
@@ -81,9 +82,11 @@ def next_state(next):
         socketio.emit("next", json.dumps(msg))
 
 
-@app.route('/start')
-def brew_start():
-    return "Not Implemented"
+@app.route('/start/<start_brew_id>')
+def brew_start(start_brew_id):
+    print("endpoint called: /start/", start_brew_id)
+    start_brewdaemon(start_brew_id)
+    return json.dumps({"ok": True})
 
 
 @app.route('/status')
@@ -142,7 +145,7 @@ def write_to_queue(control):
         return False
     except ipc.BusyError as e:
         print("socket busy error: write_to_queue", e)
-        queue.close()
+        # queue.close()
         return False
     except Exception as e:
         print("error: ", e)

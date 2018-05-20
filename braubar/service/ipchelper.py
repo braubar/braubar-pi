@@ -5,6 +5,7 @@ import signal
 TYPE_TEMP = "temp"
 TYPE_CONTROL = "control"
 CONTROL_NEXT = "next"
+CONTROL_PREV = "previous"
 CONTROL_START = "start"
 CONTROL_STOP = "stop"
 QUEUE_ENCODING = "utf-8"
@@ -17,7 +18,6 @@ class IPCReceiver:
     def __init__(self, mq_name):
         self.name = mq_name
         self.queue = ipc.MessageQueue(name=self.name, flags=ipc.O_CREAT)
-        self.queue.request_notification(signal.SIGALRM)
 
     def cleanup(self):
         if self.queue:
