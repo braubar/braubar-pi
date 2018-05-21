@@ -43,6 +43,8 @@ def brewboard():
     print(request)
     brew_id = request.values["brew_id"]
     # TODO: brewdaemon run
+    if brew_id is '':
+        brew_id = str(cs.get_last_brew_id() + 1)
     start_brewdaemon(brew_id)
     recipe_file = open(BrewConfig.RECIPE_FILE)
     recipe = json.load(recipe_file)

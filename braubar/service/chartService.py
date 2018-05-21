@@ -203,8 +203,10 @@ class ChartService:
 
     def get_last_brew_id(self):
         stmt_args = []
-        stmt = '''select brew_id from brewlog order by brew_id DESC LIMIT 1'''
+        stmt = '''select brew_id from brewlog GROUP BY brew_id order by brew_id DESC LIMIT 1'''
+
         data = self.select(stmt, stmt_args)
-        if data is not None and len(data) is not 0 and data[0][0] is not None and data[0][0] is not '':
+        if data is not None and len(data) is not 0 and data[0][0] is not None:
+            assert data[0][0] is not ''
             return data[0][0]
         return 1
