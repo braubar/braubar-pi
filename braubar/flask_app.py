@@ -11,7 +11,6 @@ from service.chartService import ChartService
 from service.brewconfig import BrewConfig
 from service.ipchelper import prepare_data, TYPE_CONTROL, CONTROL_NEXT
 from service.powerstrip import PowerStrip
-#from brewdaemon import BrewDaemon
 
 __author__ = 'oli@fesseler.info'
 __version__ = ('0', '0', '1')
@@ -24,11 +23,10 @@ thread = None
 cs = None
 bc = None
 ps = None
-#bd = BrewDaemon()
 log = BrewLog()
 
-POWERSTRIP_URL = BrewConfig().get('powerstrip')['url']
-BREWDAEMON_FILE = "brewdaemon.py"
+POWERSTRIP_URL: str = BrewConfig().get('powerstrip')['url']
+BREWDAEMON_FILE: str = "brewdaemon.py"
 
 
 @app.route('/')
