@@ -32,7 +32,6 @@ BREWDAEMON_FILE: str = "brewdaemon.py"
 @app.route('/')
 def index():
     return render_template('index.html',
-                           brew_id=brew_id,
                            powerstrip_url=ps.get_url(),
                            powerstrip_ok=ps.check(),
                            sensor_port=bc.get("braubar")["sensor_port"],
@@ -64,6 +63,7 @@ def handle_connected(connected_msg):
 def handle_update(update_msg):
     socketio.emit("update chart", json.dumps(cs.status(brew_id=brew_id)))
     print("emitted update chart after message: ", update_msg)
+
 
 @socketio.on("next")
 def next_state(next):
