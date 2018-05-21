@@ -17,3 +17,30 @@ to  `/boot/config`. Then wire the sensor to GPIO4 (pin 7)
 
 For more information and install manuals see: <http://braubar.github.io>
 
+## Database Design (DRAFT)
+
+```
+TABLES:
+- brew_meta
+- brew_log
+
+BREW_META:
+- id: INT
+- sud_nr: INT
+- start_time: DATETIME
+- end_time: DATETIME
+
+BREW_LOG:
+- timestamp: DATETIME
+- brew_id: INT (BREW_META.id)
+- sensor_id: INT
+- current_temp: FLOAT
+- target_temp: FLOAT
+- change: FLOAT
+- timer_passed: INT
+- timer_set: INT
+- state: TEXT
+
+```
+
+
