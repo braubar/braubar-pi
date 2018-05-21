@@ -2,7 +2,8 @@ $(document).ready(function () {
     var socket = io();
     var chart;
     socket.on('connect', function () {
-        socket.emit('connected', {data: 'I\'m connected!'});
+        socket.emit('connected', {data: 'I\'m connected!', brew_id: $("#brew_id_1").text()});
+        console.log($("#brew_id_1").text())
         // console.log("connected to " + document.domain + " at port: " + location.port)
         socket.on("disconnect", function () {
             console.log("disconnected")

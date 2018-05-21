@@ -55,8 +55,8 @@ def brewboard():
 
 @socketio.on("connected")
 def handle_connected(connected_msg):
-    emit("fullchart", cs.brew_chart(brew_id=brew_id))
-    print(connected_msg)
+     emit("fullchart", cs.brew_chart(brew_id=int(connected_msg["brew_id"])))
+     print(connected_msg)
 
 
 @socketio.on("update chart")
