@@ -78,6 +78,7 @@ class BrewLog:
 
     def create_table(self):
         try:
+            # brewlog
             self.db.execute('''
                 CREATE TABLE brewlog (
                     brew_time DATETIME NOT NULL,
@@ -89,6 +90,16 @@ class BrewLog:
                     brew_id INT,
                     timer_passed INT, 
                     brew_start DATETIME NOT NULL
+                )
+            ''')
+
+            # brew_meta
+            self.db.execute('''
+                CREATE TABLE brew_meta (
+                    id INT PRIMARY KEY NOT NULL,
+                    sud_nr INT NOT NULL, 
+                    start_time DATETIME,
+                    end_time DATETIME
                 )
             ''')
         except sqlite3.Error as e:
