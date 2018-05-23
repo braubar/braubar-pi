@@ -35,7 +35,8 @@ def index():
                            powerstrip_url=ps.get_url(),
                            powerstrip_ok=ps.check(),
                            sensor_port=bc.get("braubar")["sensor_port"],
-                           last_brew_id=cs.get_last_brew_id())
+                           last_brew_id=cs.get_last_brew_id(),
+                           brew_meta=cs.get_all_brew_meta())
 
 
 @app.route('/brewboard', methods=["POST"])

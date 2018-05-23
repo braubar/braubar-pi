@@ -210,3 +210,13 @@ class ChartService:
             assert data[0][0] is not ''
             return data[0][0]
         return 1
+
+    def get_all_brew_meta(self):
+        stmt_args = []
+        stmt = '''select * from brew_meta'''
+
+        data = self.select(stmt, stmt_args)
+        if data is not None and len(data) is not 0 and data[0][0] is not None:
+            assert data[0][0] is not ''
+            return data[0][0]
+        return 1
